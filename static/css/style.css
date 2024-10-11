@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
+
+h1 {
+    margin: 0;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.service-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-card img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.service-card h2 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.service-card .url {
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.service-card .url:hover {
+    color: #004080;
+    text-decoration: underline;
+}
+
+.service-card .description {
+    color: #444;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.service-card.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}

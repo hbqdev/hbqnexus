@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Showcase of Nexus self-hosted services">
+    <meta name="keywords" content="Nexus, self-hosted, services, cloud, streaming">
+    <title>Nexus Services Showcase</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Nexus Services Showcase</h1>
+    </header>
+    <main>
+        <div class="services-grid">
+            {% for service in services %}
+            <div class="service-card">
+                <img src="https://via.placeholder.com/150" alt="{{ service.name }} logo">
+                <h2>{{ service.name }}</h2>
+                <a href="https://{{ service.url }}" target="_blank" rel="noopener noreferrer" class="url">{{ service.url }}</a>
+                <p class="description">{{ service.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
