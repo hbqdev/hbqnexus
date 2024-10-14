@@ -71,7 +71,7 @@ services = [
     {
         "name": "Nexus Chat",
         "url": "chat.hbqnexus.win",
-        "description": "Secure, end-to-end encrypted chat platform for private conversations."
+        "description": "chatGPT alternatives, premium API access to all major foundation models (Claude, GPT-4o, Gemini, Mistral)."
     },
     {
         "name": "Nexus Search",
