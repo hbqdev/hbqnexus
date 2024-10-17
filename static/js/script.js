@@ -1,41 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cards = document.querySelectorAll('.service-card');
-    const modal = document.getElementById('modal-container');
-    const modalIframe = document.getElementById('modal-iframe');
-    const closeButton = document.querySelector('.close-button');
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
+                entry.target.style.animationPlayState = 'running';
             }
         });
     }, { threshold: 0.1 });
 
     cards.forEach(card => {
         observer.observe(card);
-    });
+        
+        card.addEventListener('mouseenter', () => {
+            card.style.backgroundColor = '#0f3460';
+        });
 
-    // Prevent default behavior for service URLs and open in modal instead
-    document.querySelectorAll('.service-card .url').forEach(link => {
-        link.addEventListener('click', (e) => {
+        card.addEventListener('mouseleave', () => {
+            card.style.backgroundColor = '#16213e';
+        });
+
+        const url = card.querySelector('.url');
+        url.addEventListener('click', (e) => {
             e.preventDefault();
-            modalIframe.src = e.target.href;
-            modal.style.display = 'block';
+            const serviceName = card.querySelector('h2').textContent;
+            const confirmNavigation = confirm(`You are about to visit ${serviceName}. Do you want to continue?`);
+            if (confirmNavigation) {
+                window.open(url.href, '_blank');
+            }
         });
     });
 
-    // Close modal when clicking the close button
-    closeButton.onclick = () => {
-        modal.style.display = 'none';
-        modalIframe.src = '';
-    };
-
-    // Close modal when clicking outside of it
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-            modalIframe.src = '';
-        }
-    };
+    // Add a subtle parallax effect to the header
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+        const scrollPosition = window.pageYOffset;
+        header.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
+    });
 });

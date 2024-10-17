@@ -6,7 +6,7 @@ services = [
     {
         "name": "Nexus Stream",
         "url": "stream.tinflix.win",
-        "description": "Stream your favorite movies and TV shows with our lightning-fast, ad-free service."
+        "description": "Stream your favorite movies and TV shows for free, no ads, no fuss, no strings attached."
     },
     {
         "name": "Nexus Cloud",
