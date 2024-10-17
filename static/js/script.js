@@ -1,4 +1,40 @@
+function generateRandomColor() {
+    const hue = Math.floor(Math.random() * 360);
+    const saturation = Math.floor(Math.random() * 30) + 70; // 70-100%
+    const lightness = Math.floor(Math.random() * 30) + 60; // 60-90%
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
+function generateComplementaryColor(baseColor) {
+    const hue = parseInt(baseColor.match(/\d+/)[0]);
+    const complementaryHue = (hue + 180) % 360;
+    return `hsl(${complementaryHue}, 80%, 60%)`;
+}
+
+function getContrastColor(bgColor) {
+    const rgb = bgColor.match(/\d+/g);
+    const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+    return brightness > 128 ? '#000000' : '#ffffff';
+}
+
+function applyColors() {
+    const backgroundColor = generateRandomColor();
+    document.body.style.backgroundColor = backgroundColor;
+
+    const headerText = document.querySelector('h1');
+    headerText.style.color = getContrastColor(backgroundColor);
+
+    const cards = document.querySelectorAll('.service-card');
+    cards.forEach(card => {
+        const cardColor = generateRandomColor();
+        card.style.backgroundColor = cardColor;
+        card.style.color = getContrastColor(cardColor);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    applyColors();
+    window.addEventListener('resize', applyColors);
     const cards = document.querySelectorAll('.service-card');
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
