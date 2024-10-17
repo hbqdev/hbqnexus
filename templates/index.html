@@ -12,20 +12,35 @@
     <header>
         <h1>Welcome to the Nexus</h1>
     </header>
+    <nav>
+        <button class="tab-button active" data-tab="services">Services</button>
+        <button class="tab-button" data-tab="about">About Me</button>
+    </nav>
     <main>
-        <div class="services-grid">
-            {% for service in services %}
-            <div class="service-card" {% if service.name == "Nexus Tinflix" %}style="background-image: url('{{ url_for('static', filename='images/tinflix.jpg') }}');"{% endif %}>
-                <h2>{{ service.name }}</h2>
-                <a href="https://{{ service.url }}" target="_blank" rel="noopener noreferrer" class="url">{{ service.url }}</a>
-                <p class="description">{{ service.description }}</p>
+        <div id="services" class="tab-content active">
+            <div class="services-grid">
+                {% for service in services %}
+                <div class="service-card" {% if service.name == "Nexus Tinflix" %}style="background-image: url('{{ url_for('static', filename='images/tinflix.jpg') }}');"{% endif %}>
+                    <h2>{{ service.name }}</h2>
+                    <a href="https://{{ service.url }}" target="_blank" rel="noopener noreferrer" class="url">{{ service.url }}</a>
+                    <p class="description">{{ service.description }}</p>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-        <div id="modal-container" class="modal">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <iframe id="modal-iframe" src="" frameborder="0"></iframe>
+        <div id="about" class="tab-content">
+            <div class="about-container">
+                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Tin Tran" class="profile-picture">
+                <div class="bio">
+                    <h2>Tin Tran</h2>
+                    <h3>Software Engineer in Silicon Valley, California</h3>
+                    <p>Hello! I'm Tin Tran, a passionate Software Engineer based in the heart of Silicon Valley. With a keen interest in self-hosted services and open-source technologies, I've created the Nexus project to showcase the power of personal cloud solutions.</p>
+                    <p>My expertise lies in full-stack development, cloud architecture, and DevOps practices. When I'm not coding, you can find me exploring new hiking trails in the Bay Area or experimenting with home automation projects.</p>
+                    <div class="social-links">
+                        <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                        <a href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
