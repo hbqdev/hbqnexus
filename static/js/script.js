@@ -56,12 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const aboutModal = document.querySelector('#about-modal');
     const closeModal = document.querySelector('.close-modal');
 
-    function positionCards() {
+    let isDragging = false;
+    let startX, startY;
+
+    nexusCenter.addEventListener('mousedown', startDragging);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDragging);
+
+    function positionCards(centerX, centerY) {
         const totalCards = cards.length;
-        const containerRect = document.querySelector('.nexus-container').getBoundingClientRect();
-        const centerX = containerRect.width / 2;
-        const centerY = containerRect.height / 2;
-        const radius = Math.min(containerRect.width, containerRect.height) * 0.35;
+        const radius = Math.min(window.innerWidth, window.innerHeight) * 0.35;
 
         cards.forEach((card, index) => {
             const angle = (index / totalCards) * 2 * Math.PI;
@@ -73,8 +77,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    positionCards();
-    window.addEventListener('resize', positionCards);
+    const containerRect = document.querySelector('.nexus-container').getBoundingClientRect();
+    const initialX = containerRect.width / 2;
+    const initialY = containerRect.height / 2;
+    nexusCenter.style.left = `${initialX}px`;
+    nexusCenter.style.top = `${initialY}px`;
+    positionCards(initialX, initialY);
+    window.addEventListener('resize', () => {
+        positionCards(window.innerWidth / 2, window.innerHeight / 2);
+    });
 
     // Nexus center click functionality
     nexusCenter.addEventListener('click', () => {
@@ -109,6 +120,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupCardHoverEffects();
+
+    function startDragging(e) {
+        isDragging = true;
+        startX = e.clientX - nexusCenter.offsetLeft;
+        startY = e.clientY - nexusCenter.offsetTop;
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        
+        const newX = e.clientX - startX;
+        const newY = e.clientY - startY;
+        
+        moveNexusAndCards(newX, newY);
+    }
+
+    function stopDragging() {
+        isDragging = false;
+    }
+
+    function moveNexusAndCards(newX, newY) {
+        nexusCenter.style.left = `${newX}px`;
+        nexusCenter.style.top = `${newY}px`;
+        
+        positionCards(newX, newY);
+    }
 });
 
 function generateSVGBackground() {
