@@ -24,6 +24,22 @@ function applyColors() {
     const headerText = document.querySelector('h1');
     headerText.style.color = getContrastColor(backgroundColor);
 
+    const aboutContainer = document.querySelector('.about-container');
+    if (aboutContainer) {
+        aboutContainer.style.backgroundColor = backgroundColor;
+    }
+
+    const bioText = document.querySelectorAll('.bio h2, .bio h3, .bio p');
+    bioText.forEach(element => {
+        element.style.color = getContrastColor(backgroundColor);
+    });
+
+    const socialLinks = document.querySelectorAll('.social-links a');
+    socialLinks.forEach(link => {
+        link.style.backgroundColor = generateComplementaryColor(backgroundColor);
+        link.style.color = getContrastColor(link.style.backgroundColor);
+    });
+
     const cards = document.querySelectorAll('.service-card');
     cards.forEach(card => {
         const cardColor = generateRandomColor();
@@ -34,58 +50,70 @@ function applyColors() {
 
 document.addEventListener('DOMContentLoaded', () => {
     applyColors();
-    window.addEventListener('resize', applyColors);
     const cards = document.querySelectorAll('.service-card');
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
+    const nexusCenter = document.querySelector('.nexus-center');
+    const aboutButton = document.querySelector('[data-tab="about"]');
+    const aboutModal = document.querySelector('#about-modal');
+    const closeModal = document.querySelector('.close-modal');
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
-            }
-        });
-    }, { threshold: 0.1 });
+    function positionCards() {
+        const totalCards = cards.length;
+        const containerRect = document.querySelector('.nexus-container').getBoundingClientRect();
+        const centerX = containerRect.width / 2;
+        const centerY = containerRect.height / 2;
+        const radius = Math.min(containerRect.width, containerRect.height) * 0.35;
 
-    cards.forEach(card => {
-        observer.observe(card);
-        
-        card.addEventListener('mouseenter', () => {
-            card.style.backgroundColor = '#0f3460';
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.backgroundColor = '#16213e';
-        });
-
-        const url = card.querySelector('.url');
-        url.addEventListener('click', (e) => {
-            e.preventDefault();
-            const serviceName = card.querySelector('h2').textContent;
-            const confirmNavigation = confirm(`You are about to visit ${serviceName}. Do you want to continue?`);
-            if (confirmNavigation) {
-                window.open(url.href, '_blank');
-            }
-        });
-    });
-
-    // Tab switching functionality
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const tabId = button.getAttribute('data-tab');
+        cards.forEach((card, index) => {
+            const angle = (index / totalCards) * 2 * Math.PI;
+            const x = centerX + radius * Math.cos(angle) - card.offsetWidth / 2;
+            const y = centerY + radius * Math.sin(angle) - card.offsetHeight / 2;
             
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            button.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            card.style.left = `${x}px`;
+            card.style.top = `${y}px`;
         });
+    }
+
+    positionCards();
+    window.addEventListener('resize', positionCards);
+
+    // Nexus center click functionality
+    nexusCenter.addEventListener('click', () => {
+        const randomService = services[Math.floor(Math.random() * services.length)];
+        openIframe(`https://${randomService.url}`);
     });
 
-    // Add a subtle parallax effect to the header
-    const header = document.querySelector('header');
-    window.addEventListener('scroll', () => {
-        const scrollPosition = window.pageYOffset;
-        header.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
+    // About modal functionality
+    aboutButton.addEventListener('click', () => {
+        aboutModal.style.display = 'flex';
     });
+
+    closeModal.addEventListener('click', () => {
+        aboutModal.style.display = 'none';
+    });
+
+    // Generate SVG background
+    generateSVGBackground();
 });
+
+function generateSVGBackground() {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "100%");
+    svg.style.position = "fixed";
+    svg.style.top = "0";
+    svg.style.left = "0";
+    svg.style.zIndex = "-1";
+
+    for (let i = 0; i < 50; i++) {
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", Math.random() * 100 + "%");
+        line.setAttribute("y1", Math.random() * 100 + "%");
+        line.setAttribute("x2", Math.random() * 100 + "%");
+        line.setAttribute("y2", Math.random() * 100 + "%");
+        line.setAttribute("stroke", "rgba(255, 255, 255, 0.1)");
+        line.setAttribute("stroke-width", "1");
+        svg.appendChild(line);
+    }
+
+    document.body.appendChild(svg);
+}
