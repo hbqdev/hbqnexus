@@ -93,6 +93,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Generate SVG background
     generateSVGBackground();
+
+    function setupCardHoverEffects() {
+        const cards = document.querySelectorAll('.service-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.zIndex = '100';
+            });
+            card.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    card.style.zIndex = '1';
+                }, 300); // Delay to match the transition duration
+            });
+        });
+    }
+
+    setupCardHoverEffects();
 });
 
 function generateSVGBackground() {
