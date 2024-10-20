@@ -1,46 +1,4 @@
-function generateRandomColor() {
-    const hue = Math.floor(Math.random() * 360);
-    const saturation = Math.floor(Math.random() * 30) + 70; // 70-100%
-    const lightness = Math.floor(Math.random() * 30) + 60; // 60-90%
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-}
-
-function generateComplementaryColor(baseColor) {
-    const hue = parseInt(baseColor.match(/\d+/)[0]);
-    const complementaryHue = (hue + 180) % 360;
-    return `hsl(${complementaryHue}, 80%, 60%)`;
-}
-
-function getContrastColor(bgColor) {
-    const rgb = bgColor.match(/\d+/g);
-    const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
-    return brightness > 128 ? '#000000' : '#ffffff';
-}
-
-function applyColors() {
-    const cards = document.querySelectorAll('.service-card');
-    cards.forEach(card => {
-        const cardColor = generateRandomColor();
-        card.style.backgroundColor = cardColor;
-        
-        const textColor = getContrastColor(cardColor);
-        card.style.color = textColor;
-        
-        const urlElement = card.querySelector('.url');
-        if (urlElement) {
-            urlElement.style.color = textColor;
-        }
-        
-        // Add a semi-transparent overlay for better text visibility
-        const overlay = document.createElement('div');
-        overlay.className = 'card-overlay';
-        overlay.style.backgroundColor = `${textColor}22`; // 22 is the hex value for 13% opacity
-        card.insertBefore(overlay, card.firstChild);
-    });
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    applyColors();
     const cards = document.querySelectorAll('.service-card');
     const nexusCenter = document.querySelector('.nexus-center');
     const aboutButton = document.querySelector('[data-tab="about"]');
@@ -67,13 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const y = centerY + radius * Math.sin(angle) - card.offsetHeight / 2;
             
             if (animate) {
+                card.style.transition = 'all 1s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.5) translateY(50px)';
+                card.style.left = `${centerX}px`;
+                card.style.top = `${centerY}px`;
+                
                 setTimeout(() => {
-                    card.style.transition = 'all 1s cubic-bezier(0.25, 0.1, 0.25, 1)';
                     card.style.opacity = '1';
-                    card.style.transform = 'scale(1) rotate(0deg)';
+                    card.style.transform = 'scale(1) translateY(0)';
                     card.style.left = `${x}px`;
                     card.style.top = `${y}px`;
-                }, index * 100);
+                }, 50 * index);
             } else {
                 card.style.left = `${x}px`;
                 card.style.top = `${y}px`;
@@ -210,3 +173,4 @@ function updatePosition() {
 
 updatePosition();
 window.addEventListener('resize', updatePosition);
+
