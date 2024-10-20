@@ -18,33 +18,24 @@ function getContrastColor(bgColor) {
 }
 
 function applyColors() {
-    const backgroundColor = generateRandomColor();
-    document.body.style.backgroundColor = backgroundColor;
-
-    const headerText = document.querySelector('h1');
-    headerText.style.color = getContrastColor(backgroundColor);
-
-    const aboutContainer = document.querySelector('.about-container');
-    if (aboutContainer) {
-        aboutContainer.style.backgroundColor = backgroundColor;
-    }
-
-    const bioText = document.querySelectorAll('.bio h2, .bio h3, .bio p');
-    bioText.forEach(element => {
-        element.style.color = getContrastColor(backgroundColor);
-    });
-
-    const socialLinks = document.querySelectorAll('.social-links a');
-    socialLinks.forEach(link => {
-        link.style.backgroundColor = generateComplementaryColor(backgroundColor);
-        link.style.color = getContrastColor(link.style.backgroundColor);
-    });
-
     const cards = document.querySelectorAll('.service-card');
     cards.forEach(card => {
         const cardColor = generateRandomColor();
         card.style.backgroundColor = cardColor;
-        card.style.color = getContrastColor(cardColor);
+        
+        const textColor = getContrastColor(cardColor);
+        card.style.color = textColor;
+        
+        const urlElement = card.querySelector('.url');
+        if (urlElement) {
+            urlElement.style.color = textColor;
+        }
+        
+        // Add a semi-transparent overlay for better text visibility
+        const overlay = document.createElement('div');
+        overlay.className = 'card-overlay';
+        overlay.style.backgroundColor = `${textColor}22`; // 22 is the hex value for 13% opacity
+        card.insertBefore(overlay, card.firstChild);
     });
 }
 
@@ -155,10 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function moveNexusAndCards(newX, newY) {
-        nexusCenter.style.left = `${newX}px`;
-        nexusCenter.style.top = `${newY}px`;
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const offsetX = newX - centerX;
+        const offsetY = newY - centerY;
         
-        positionCards(newX, newY);
+        positionCards(centerX + offsetX, centerY + offsetY);
     }
 });
 
@@ -185,38 +178,35 @@ function generateSVGBackground() {
     document.body.appendChild(svg);
 }
 
-window.addEventListener('resize', updatePosition);
+let rotationAngle = 0;
+let rotationInterval;
 
-function createStarfield() {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    const starGeometry = new THREE.BufferGeometry();
-    const starMaterial = new THREE.PointsMaterial({color: 0xFFFFFF});
-
-    const starVertices = [];
-    for (let i = 0; i < 10000; i++) {
-        const x = (Math.random() - 0.5) * 2000;
-        const y = (Math.random() - 0.5) * 2000;
-        const z = (Math.random() - 0.5) * 2000;
-        starVertices.push(x, y, z);
-    }
-
-    starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
-    const stars = new THREE.Points(starGeometry, starMaterial);
-    scene.add(stars);
-
-    camera.position.z = 1;
-
-    function animate() {
-        requestAnimationFrame(animate);
-        stars.rotation.y += 0.0002;
-        renderer.render(scene, camera);
-    }
-    animate();
+function startRotation() {
+    rotationInterval = setInterval(() => {
+        rotationAngle += Math.PI / 50; // Adjust speed here (currently 1/10 circle per second)
+        const nexusCenterRect = nexusCenter.getBoundingClientRect();
+        const centerX = nexusCenterRect.left + nexusCenterRect.width / 2;
+        const centerY = nexusCenterRect.top + nexusCenterRect.height / 2;
+        positionCards(centerX, centerY, rotationAngle);
+    }, 20);
 }
 
-createStarfield();
+function stopRotation() {
+    clearInterval(rotationInterval);
+}
+
+startRotation();
+
+cards.forEach(card => {
+    card.addEventListener('mouseenter', stopRotation);
+    card.addEventListener('mouseleave', startRotation);
+});
+
+function updatePosition() {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    positionCards(centerX, centerY);
+}
+
+updatePosition();
+window.addEventListener('resize', updatePosition);
