@@ -63,17 +63,30 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', stopDragging);
 
-    function positionCards(centerX, centerY) {
+    function positionCards(centerX, centerY, animate = false) {
         const totalCards = cards.length;
         const radius = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+
+        nexusCenter.style.left = `${centerX}px`;
+        nexusCenter.style.top = `${centerY}px`;
 
         cards.forEach((card, index) => {
             const angle = (index / totalCards) * 2 * Math.PI;
             const x = centerX + radius * Math.cos(angle) - card.offsetWidth / 2;
             const y = centerY + radius * Math.sin(angle) - card.offsetHeight / 2;
             
-            card.style.left = `${x}px`;
-            card.style.top = `${y}px`;
+            if (animate) {
+                setTimeout(() => {
+                    card.style.transition = 'all 1s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1) rotate(0deg)';
+                    card.style.left = `${x}px`;
+                    card.style.top = `${y}px`;
+                }, index * 100);
+            } else {
+                card.style.left = `${x}px`;
+                card.style.top = `${y}px`;
+            }
         });
     }
 
@@ -82,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialY = containerRect.height / 2;
     nexusCenter.style.left = `${initialX}px`;
     nexusCenter.style.top = `${initialY}px`;
-    positionCards(initialX, initialY);
+    positionCards(initialX, initialY, true);
     window.addEventListener('resize', () => {
         positionCards(window.innerWidth / 2, window.innerHeight / 2);
     });
@@ -171,3 +184,39 @@ function generateSVGBackground() {
 
     document.body.appendChild(svg);
 }
+
+window.addEventListener('resize', updatePosition);
+
+function createStarfield() {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const starGeometry = new THREE.BufferGeometry();
+    const starMaterial = new THREE.PointsMaterial({color: 0xFFFFFF});
+
+    const starVertices = [];
+    for (let i = 0; i < 10000; i++) {
+        const x = (Math.random() - 0.5) * 2000;
+        const y = (Math.random() - 0.5) * 2000;
+        const z = (Math.random() - 0.5) * 2000;
+        starVertices.push(x, y, z);
+    }
+
+    starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    camera.position.z = 1;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        stars.rotation.y += 0.0002;
+        renderer.render(scene, camera);
+    }
+    animate();
+}
+
+createStarfield();
