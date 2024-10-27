@@ -1,0 +1,12 @@
+{
+  "site_name": "Nexus Hub",
+  "description": "A collection of self-hosted services",
+  "author": "Tin Tran",
+  "contact_email": "contact@hbqnexus.win",
+  "version": "2.0.0",
+  "categories": [
+    "media",
+    "productivity",
+    "tools"
+  ]
+}

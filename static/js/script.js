@@ -1,176 +1,102 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.service-card');
-    const nexusCenter = document.querySelector('.nexus-center');
+    const serviceTiles = document.querySelectorAll('.service-tile');
+    const previewFrame = document.querySelector('.preview-frame');
+    const previewPlaceholder = document.querySelector('.preview-placeholder');
     const aboutButton = document.querySelector('[data-tab="about"]');
     const aboutModal = document.querySelector('#about-modal');
     const closeModal = document.querySelector('.close-modal');
 
-    let isDragging = false;
-    let startX, startY;
+    // Category filtering
+    const categories = [...new Set(Array.from(serviceTiles)
+        .map(tile => tile.dataset.category))];
 
-    nexusCenter.addEventListener('mousedown', startDragging);
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', stopDragging);
-
-    function positionCards(centerX, centerY, animate = false) {
-        const totalCards = cards.length;
-        const radius = Math.min(window.innerWidth, window.innerHeight) * 0.35;
-
-        nexusCenter.style.left = `${centerX}px`;
-        nexusCenter.style.top = `${centerY}px`;
-
-        cards.forEach((card, index) => {
-            const angle = (index / totalCards) * 2 * Math.PI;
-            const x = centerX + radius * Math.cos(angle) - card.offsetWidth / 2;
-            const y = centerY + radius * Math.sin(angle) - card.offsetHeight / 2;
+    // Service tile click handler
+    serviceTiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+            // Get the URL from the tile's data attribute
+            const url = tile.dataset.url;
+            console.log('Clicked URL:', url); // Debug log
             
-            if (animate) {
-                card.style.transition = 'all 1s cubic-bezier(0.25, 0.1, 0.25, 1)';
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.5) translateY(50px)';
-                card.style.left = `${centerX}px`;
-                card.style.top = `${centerY}px`;
-                
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'scale(1) translateY(0)';
-                    card.style.left = `${x}px`;
-                    card.style.top = `${y}px`;
-                }, 50 * index);
-            } else {
-                card.style.left = `${x}px`;
-                card.style.top = `${y}px`;
+            // Get the tile's position and dimensions
+            const rect = tile.getBoundingClientRect();
+            
+            // Create flying clone
+            const clone = tile.cloneNode(true);
+            Object.assign(clone.style, {
+                position: 'fixed',
+                width: `${rect.width}px`,
+                height: `${rect.height}px`,
+                top: `${rect.top}px`,
+                left: `${rect.left}px`,
+                zIndex: '1000',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                background: 'white',
+                borderRadius: '12px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                transform: 'scale(1)'
+            });
+            
+            document.body.appendChild(clone);
+
+            // Animate to preview side
+            requestAnimationFrame(() => {
+                Object.assign(clone.style, {
+                    transform: 'translate(-50%, -50%) scale(1.5)',
+                    top: '50%',
+                    left: '75%',
+                    opacity: '0'
+                });
+            });
+
+            // Show preview in iframe
+            setTimeout(() => {
+                previewPlaceholder.style.display = 'none';
+                previewFrame.style.display = 'block';
+                previewFrame.innerHTML = `
+                    <iframe 
+                        src="https://${url}"
+                        style="width:100%;height:100vh;border:none;"
+                        allow="fullscreen"
+                    ></iframe>
+                `;
+                clone.remove();
+            }, 500);
+        });
+
+        // Add hover effects
+        tile.addEventListener('mouseenter', () => {
+            tile.style.transform = 'translateY(-5px) scale(1.02)';
+        });
+
+        tile.addEventListener('mouseleave', () => {
+            tile.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // About modal functionality
+    if (aboutButton && aboutModal && closeModal) {
+        aboutButton.addEventListener('click', () => {
+            aboutModal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            aboutModal.style.display = 'none';
+        });
+
+        // Close modal on outside click
+        window.addEventListener('click', (e) => {
+            if (e.target === aboutModal) {
+                aboutModal.style.display = 'none';
             }
         });
     }
 
-    const containerRect = document.querySelector('.nexus-container').getBoundingClientRect();
-    const initialX = containerRect.width / 2;
-    const initialY = containerRect.height / 2;
-    nexusCenter.style.left = `${initialX}px`;
-    nexusCenter.style.top = `${initialY}px`;
-    positionCards(initialX, initialY, true);
-    window.addEventListener('resize', () => {
-        positionCards(window.innerWidth / 2, window.innerHeight / 2);
-    });
-
-    // Nexus center click functionality
-    nexusCenter.addEventListener('click', () => {
-        const randomService = services[Math.floor(Math.random() * services.length)];
-        openIframe(`https://${randomService.url}`);
-    });
-
-    // About modal functionality
-    aboutButton.addEventListener('click', () => {
-        aboutModal.style.display = 'flex';
-    });
-
-    closeModal.addEventListener('click', () => {
-        aboutModal.style.display = 'none';
-    });
-
-    // Generate SVG background
-    generateSVGBackground();
-
-    function setupCardHoverEffects() {
-        const cards = document.querySelectorAll('.service-card');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.zIndex = '100';
-            });
-            card.addEventListener('mouseleave', () => {
-                setTimeout(() => {
-                    card.style.zIndex = '1';
-                }, 300); // Delay to match the transition duration
-            });
+    // Initialize AOS animations
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
         });
     }
-
-    setupCardHoverEffects();
-
-    function startDragging(e) {
-        isDragging = true;
-        startX = e.clientX - nexusCenter.offsetLeft;
-        startY = e.clientY - nexusCenter.offsetTop;
-    }
-
-    function drag(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        
-        const newX = e.clientX - startX;
-        const newY = e.clientY - startY;
-        
-        moveNexusAndCards(newX, newY);
-    }
-
-    function stopDragging() {
-        isDragging = false;
-    }
-
-    function moveNexusAndCards(newX, newY) {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const offsetX = newX - centerX;
-        const offsetY = newY - centerY;
-        
-        positionCards(centerX + offsetX, centerY + offsetY);
-    }
 });
-
-function generateSVGBackground() {
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "100%");
-    svg.setAttribute("height", "100%");
-    svg.style.position = "fixed";
-    svg.style.top = "0";
-    svg.style.left = "0";
-    svg.style.zIndex = "-1";
-
-    for (let i = 0; i < 50; i++) {
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", Math.random() * 100 + "%");
-        line.setAttribute("y1", Math.random() * 100 + "%");
-        line.setAttribute("x2", Math.random() * 100 + "%");
-        line.setAttribute("y2", Math.random() * 100 + "%");
-        line.setAttribute("stroke", "rgba(255, 255, 255, 0.1)");
-        line.setAttribute("stroke-width", "1");
-        svg.appendChild(line);
-    }
-
-    document.body.appendChild(svg);
-}
-
-let rotationAngle = 0;
-let rotationInterval;
-
-function startRotation() {
-    rotationInterval = setInterval(() => {
-        rotationAngle += Math.PI / 50; // Adjust speed here (currently 1/10 circle per second)
-        const nexusCenterRect = nexusCenter.getBoundingClientRect();
-        const centerX = nexusCenterRect.left + nexusCenterRect.width / 2;
-        const centerY = nexusCenterRect.top + nexusCenterRect.height / 2;
-        positionCards(centerX, centerY, rotationAngle);
-    }, 20);
-}
-
-function stopRotation() {
-    clearInterval(rotationInterval);
-}
-
-startRotation();
-
-cards.forEach(card => {
-    card.addEventListener('mouseenter', stopRotation);
-    card.addEventListener('mouseleave', startRotation);
-});
-
-function updatePosition() {
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    positionCards(centerX, centerY);
-}
-
-updatePosition();
-window.addEventListener('resize', updatePosition);
-

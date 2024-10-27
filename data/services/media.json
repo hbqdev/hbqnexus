@@ -1,0 +1,41 @@
+{
+  "category": "Media",
+  "description": "Streaming, entertainment, and media services",
+  "services": [
+    {
+      "name": "Nexus Stream",
+      "url": "stream.tinflix.win",
+      "description": "Stream your favorite movies and TV shows for free, no ads, no fuss, no strings attached."
+    },
+    {
+      "name": "Nexus SonicLib",
+      "url": "soniclib.hbqnexus.win",
+      "description": "Audible alternative, use demo/password to login."
+    },
+    {
+      "name": "Nexus Tinflix",
+      "url": "tinflix.win",
+      "description": "Request movies and TV shows for Tinflix."
+    },
+    {
+      "name": "Nexus Tinlit",
+      "url": "tinlit.win",
+      "description": "Ebooks and Comics, all in one place."
+    },
+    {
+      "name": "Nexus Imagen",
+      "url": "imagen.hbqnexus.win",
+      "description": "AI-powered image generation"
+    },
+    {
+      "name": "Nexus YoutubeDL",
+      "url": "youtubedl.hbqnexus.win",
+      "description": "Easy-to-use YouTube video downloader for offline viewing and archiving."
+    },
+    {
+      "name": "Nexus Moods",
+      "url": "moods.hbqnexus.win",
+      "description": "Ambient sounds for focus and calm. Create your own soundtracks with mixing sounds."
+    }
+  ]
+}
