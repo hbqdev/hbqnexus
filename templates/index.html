@@ -10,52 +10,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.3/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
-    <div id="particles-js"></div>
-    <header>
-        <h1>Welcome to the Nexus</h1>
-        <div class="header-right">
-            <button class="tab-button" data-tab="about">About Me</button>
-        </div>
-    </header>
-    <main>
-        <div class="nexus-container">
-            <div class="nexus-hub">
-                <div class="nexus-center"></div>
+    <div class="split-container">
+        <section class="services-side">
+            <header>
+                <h1>Nexus Services</h1>
+                <button class="tab-button" data-tab="about">About Me</button>
+            </header>
+            <div class="services-grid">
                 {% for service in services %}
-                <div class="service-card">
-                    <h2>{{ service.name }}</h2>
-                    <a href="https://{{ service.url }}" class="url">{{ service.url }}</a>
-                    <p class="description">{{ service.description }}</p>
+                <div class="service-tile" data-category="{{ service.category|lower }}" data-url="{{ service.url }}">
+                    <div class="tile-content">
+                        <h2>{{ service.name }}</h2>
+                        <span class="category">{{ service.category }}</span>
+                        <p class="description">{{ service.description }}</p>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-        </div>
-    </main>
-
-    <div id="about-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Tin Tran" class="profile-picture">
-            <div class="bio">
-                <h2>Tin Tran</h2>
-                <h3>Software Engineer in Silicon Valley, California</h3>
-                <p>Hello! I'm Tin Tran, a passionate Software Engineer based in the heart of Silicon Valley. With a keen interest in self-hosted services and open-source technologies, I've created the Nexus project to showcase the power of personal cloud solutions.</p>
-                <p>My expertise lies in full-stack development, cloud architecture, and DevOps practices. When I'm not coding, you can find me exploring new hiking trails in the Bay Area or experimenting with home automation projects.</p>
-                <div class="social-links">
-                    <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                    <a href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
-                </div>
-            </div>
-        </div>
+        </section>
+        <section class="preview-side">
+            <div class="preview-placeholder">Select a service to preview</div>
+            <div class="preview-frame"></div>
+        </section>
     </div>
-
-    <div class="iframe-container">
-        <div class="iframe-close">&times;</div>
-        <iframe class="iframe-content" src="" frameborder="0"></iframe>
-    </div>
-
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <div class="bio">
 </body>
 </html>
