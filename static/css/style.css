@@ -17,7 +17,7 @@ body {
 
 .split-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 15fr 85fr;
     height: 100vh;
 }
 
@@ -38,23 +38,28 @@ body {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    padding: 1rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0.5rem;
 }
 
 .service-tile {
     background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-radius: 8px;
+    padding: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.service-tile:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+.service-tile h2 {
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.service-tile .description {
+    font-size: 0.8rem;
+    margin: 0.5rem 0;
 }
 
 #service-frame {
