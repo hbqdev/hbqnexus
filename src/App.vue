@@ -12,6 +12,9 @@
           <router-link to="/blog" class="nav-link" active-class="active">
             Blog
           </router-link>
+          <button @click="showAbout = true" class="nav-link about-button">
+            About
+          </button>
           <button @click="toggleTheme" class="theme-toggle" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
             <span class="theme-icon">{{ currentTheme === 'dark' ? '🌞' : '🌙' }}</span>
           </button>
@@ -24,13 +27,18 @@
         <component :is="Component" />
       </transition>
     </router-view>
+
+    <AboutModal :is-open="showAbout" @close="showAbout = false" />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { useTheme } from './composables/useTheme';
+import AboutModal from './components/AboutModal.vue';
 
 const { currentTheme, setTheme } = useTheme();
+const showAbout = ref(false);
 
 function toggleTheme() {
   setTheme(currentTheme.value === 'dark' ? 'light' : 'dark');
@@ -187,5 +195,13 @@ body {
   .nav-link {
     padding: 0.5rem 0.75rem;
   }
+}
+
+.about-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: inherit;
 }
 </style> 

@@ -5,7 +5,9 @@
       "title": "Welcome to My Hub",
       "date": "2024-03-20",
       "file": "welcome.md",
-      "excerpt": "Introduction to my personal services hub and its features."
+      "excerpt": "Introduction to my personal services hub and its features.",
+      "coverImage": "/posts/images/welcome-cover.jpg",
+      "tags": ["update", "introduction"]
     }
   ]
 } 

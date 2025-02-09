@@ -1,19 +1,32 @@
 # Welcome to My Hub
 
+![My Setup](/posts/images/setup.jpg "My current development setup")
+
 This is the first blog post on my personal services hub. Here I'll share updates about my self-hosted services and other interesting developments.
+
+## Video Demo
+
+[@video](https://youtu.be/s7cjG40xaNw)
 
 ## Features
 
 - Clean, minimalist design
 - Dark/light theme support
 - Easy navigation between services
-- Markdown blog support
+- Markdown blog support with media
+- Image galleries
+- Video embeds
 
-## My Services
+## Image Gallery Example
 
-Currently hosting:
-
-1. **TinFlix** - A free streaming service with curated content
-2. More services coming soon!
+::: gallery
+![Image 1](https://cdn.mos.cms.futurecdn.net/VFLt5vHV7aCoLrLGjP9Qwm-650-80.jpg.webp "Caption 1")
+:::
 
 ## Code Example
+
+```python
+print("Hello, World!")
+```
+
+## Video Embed Example
