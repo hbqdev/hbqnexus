@@ -4,12 +4,18 @@
       "name": "Media Streaming",
       "services": [
         {
-          "name": "TinFlix",
+          "name": "TinFlix Stream",
           "url": "https://stream.tinflix.win",
-          "icon": "/src/assets/services/tinflix.svg",
+          "icon": "/assets/services/tinflix.svg",
           "description": "Free streaming service with curated content library"
+        },
+        {
+          "name": "TinFlix",
+          "url": "https://tinflix.win",
+          "icon": "/assets/services/tinflix-requests.svg",
+          "description": "The place where you request whatever you wanna watch. Anything and everything."
         }
       ]
     }
   ]
-} 
+}

@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { processMarkdown } from '../utils/markdownProcessor';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
@@ -48,7 +49,7 @@ export function usePosts() {
       const markdown = await response.text();
       return {
         ...post,
-        content: marked(markdown)
+        content: processMarkdown(markdown)
       };
     } catch (error) {
       console.error('Error loading post:', error);
