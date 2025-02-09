@@ -1,0 +1,15 @@
+{
+  "categories": [
+    {
+      "name": "Media Streaming",
+      "services": [
+        {
+          "name": "TinFlix",
+          "url": "https://stream.tinflix.win",
+          "icon": "/src/assets/services/tinflix.svg",
+          "description": "Free streaming service with curated content library"
+        }
+      ]
+    }
+  ]
+} 

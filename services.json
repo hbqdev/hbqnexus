@@ -1,0 +1,32 @@
+{
+    "categories": [
+      {
+        "name": "Development",
+        "services": [
+          {
+            "name": "Git Server",
+            "url": "https://git.example.com",
+            "icon": "/assets/services/git.svg",
+            "description": "Self-hosted Git repository manager"
+          },
+          {
+            "name": "CI/CD",
+            "url": "https://ci.example.com",
+            "icon": "/assets/services/cicd.svg",
+            "description": "Continuous integration platform"
+          }
+        ]
+      },
+      {
+        "name": "Media Streaming",
+        "services": [
+          {
+            "name": "TinFlix",
+            "url": "https://stream.tinflix.win",
+            "icon": "/assets/services/tinflix.svg",
+            "description": "Free streaming service with curated content library"
+          }
+        ]
+      }
+    ]
+  }
