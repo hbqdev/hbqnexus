@@ -1,0 +1,11 @@
+{
+  "posts": [
+    {
+      "slug": "welcome",
+      "title": "Welcome to My Hub",
+      "date": "2024-03-20",
+      "file": "welcome.md",
+      "excerpt": "Introduction to my personal services hub and its features."
+    }
+  ]
+} 
