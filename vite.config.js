@@ -8,8 +8,20 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     fs: {
-      // Allow serving files from one level up to the project root
-      allow: ['..']
+      // Allow serving files from anywhere
+      strict: false,
+      allow: [
+        // Allow serving files from root and above
+        '/',
+        // Allow serving files from node_modules
+        'node_modules',
+        // Allow serving files from public
+        'public',
+        // Allow serving files from src
+        'src',
+        // Allow parent directory
+        '..'
+      ]
     },
     // Allow all hosts
     host: '0.0.0.0',
