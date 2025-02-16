@@ -50,13 +50,13 @@
       "name": "Tools",
       "services": [
         {
-          "name": "Chat",
+          "name": "Nexus Chat",
           "url": "https://chat.hbqnexus.win/",
           "icon": "/assets/services/chat.svg",
           "description": "🤖 Access cutting-edge AI models like Claude 3.5, GPT-4, Gemini, and more. Simply sign up to start chatting!"
         },
         {
-          "name": "IT tools",
+          "name": "Nexus Tools",
           "url": "https://tools.hbqnexus.win/",
           "icon": "/assets/services/it-tools.svg",
           "description": "🛠️ A comprehensive suite of professional development and IT tools, all in one convenient place."
