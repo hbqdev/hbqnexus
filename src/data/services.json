@@ -89,13 +89,19 @@
           "name": "Nexus Photos",
           "url": "https://photos.hbqnexus.win/",
           "icon": "/assets/services/nexus-photos.svg",
-          "description": "📸 A privacy-focused alternative to Google Photos and Apple iCloud, offering seamless photo storage and sharing. Message me for access."
+          "description": "📸 A privacy-focused alternative to Google Photos and Apple iCloud, offering seamless photo storage and sharing. Message me for access. "
         },
         {
           "name": "Nexus Tasks",
           "url": "https://tasks.hbqnexus.win/",
           "icon": "/assets/services/nexus-tasks.svg",
           "description": "📝 A task planner and to-do list with advanced features for productivity."
+        },
+        {
+          "name": "Nexus YouTube Downloader",
+          "url": "https://youtubedl.hbqnexus.win/",
+          "icon": "/assets/services/nexus-youtubedownloader.svg",
+          "description": "📥 Effortlessly download YouTube videos in any format you desire for offline viewing."
         },
         {
           "name": "OmniGen Media Generator",
