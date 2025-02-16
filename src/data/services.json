@@ -80,10 +80,16 @@
           "description": "📝 A markdown-supported and sync alternative note-taking app similar to Google Docs and Evernote."
         },
         {
-          "name": "Nexus PDF",    
+          "name": "Nexus PDF",
           "url": "https://pdf.hbqnexus.win/",
           "icon": "/assets/services/nexus-pdf.svg",
           "description": "📄 A self-hosted one-stop shop for all your PDF needs."
+        },
+        {
+          "name": "Nexus Photos",
+          "url": "https://photos.hbqnexus.win/",
+          "icon": "/assets/services/nexus-photos.svg",
+          "description": "📸 A privacy-focused alternative to Google Photos and Apple iCloud, offering seamless photo storage and sharing. Message me for access."
         },
         {
           "name": "Nexus Tasks",
