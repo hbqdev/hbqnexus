@@ -62,6 +62,12 @@
           "description": "🛠️ A comprehensive suite of professional development and IT tools, all in one convenient place."
         },
         {
+          "name": "OmniGen Media Generator",
+          "url": "https://omnigen.hbqnexus.win/",
+          "icon": "/assets/services/omnigen-media-generator.svg",
+          "description": "🎨 Generate stunning media content using the latest AI models for images, voice, and video."
+        },
+        {
           "name": "Search",
           "url": "https://search.hbqnexus.win/",
           "icon": "/assets/services/search.svg",
