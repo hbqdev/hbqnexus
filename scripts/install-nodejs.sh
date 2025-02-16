@@ -65,4 +65,12 @@ esac
 # Verify installation
 echo -e "\nNode.js installation completed!"
 echo "Node.js version: $(node --version)"
-echo "npm version: $(npm --version)" 
+echo "npm version: $(npm --version)"
+
+# Install global packages
+echo -e "\nInstalling global packages..."
+sudo npm install -g vite @vitejs/plugin-vue
+
+# Verify global installations
+echo -e "\nGlobal packages installed:"
+echo "Vite version: $(vite --version)" 
