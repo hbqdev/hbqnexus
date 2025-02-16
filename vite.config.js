@@ -18,8 +18,13 @@ export default defineConfig({
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
     },
-    // Allow any hostname
-    allowedHosts: 'all',
+    // Allow specific hosts and domains
+    allowedHosts: [
+      'hub.hbqnexus.win',
+      'localhost',
+      '127.0.0.1',
+      '.hbqnexus.win'  // Allows all subdomains of hbqnexus.win
+    ],
     // Add headers for security
     headers: {
       'Access-Control-Allow-Origin': '*',
