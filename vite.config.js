@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+// Determine if we're in production
+const isProduction = process.env.NODE_ENV === 'production'
+
 export default defineConfig({
   plugins: [vue()],
   server: {
@@ -23,7 +26,8 @@ export default defineConfig({
       'hub.hbqnexus.win',
       'localhost',
       '127.0.0.1',
-      '.hbqnexus.win'  // Allows all subdomains of hbqnexus.win
+      '.hbqnexus.win',
+      '192.168.50.206'
     ],
     // Add headers for security
     headers: {
@@ -32,8 +36,8 @@ export default defineConfig({
       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     }
   },
-  // Base URL for production
-  base: '/',
+  // Base URL configuration
+  base: isProduction ? 'https://hub.hbqnexus.win/' : '/',
   // Build configuration
   build: {
     // Generate source maps for debugging
@@ -41,6 +45,26 @@ export default defineConfig({
     // Ensure assets are handled correctly
     assetsDir: 'assets',
     // Output directory
-    outDir: 'dist'
+    outDir: 'dist',
+    // Add rollup options
+    rollupOptions: {
+      output: {
+        // Ensure proper asset paths
+        manualChunks: undefined,
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+      }
+    }
+  },
+  resolve: {
+    // Ensure proper module resolution
+    alias: {
+      '@': '/src'
+    }
+  },
+  optimizeDeps: {
+    // Include dependencies that need optimization
+    include: ['vue', 'vue-router']
   }
 }) 
