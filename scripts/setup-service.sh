@@ -16,7 +16,7 @@ Type=simple
 User=$USER
 WorkingDirectory=$APP_PATH
 ExecStartPre=/usr/bin/npm run build
-ExecStart=/usr/bin/npm run preview
+ExecStart=/usr/bin/npm run dev
 Restart=always
 RestartSec=10
 Environment=NODE_ENV=production
