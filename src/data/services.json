@@ -104,13 +104,13 @@
           "description": "📥 Effortlessly download YouTube videos in any format you desire for offline viewing."
         },
         {
-          "name": "OmniGen Media Generator",
+          "name": "Nexus Media Generator",
           "url": "https://omnigen.hbqnexus.win/",
           "icon": "/assets/services/omnigen-media-generator.svg",
           "description": "🎨 Generate stunning media content using the latest AI models for images, voice, and video."
         },
         {
-          "name": "Search",
+          "name": "Nexus Search",
           "url": "https://search.hbqnexus.win/",
           "icon": "/assets/services/search.svg",
           "description": "🔍 Privacy-focused meta search engine that combines results from Google, Bing, DuckDuckGo, and more, without ads or tracking."
