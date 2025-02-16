@@ -26,6 +26,7 @@
       <transition name="page" mode="out-in">
         <div class="page-wrapper">
           <div class="announcement-banner">
+            <p>🌐 Welcome to my self-hosted services and digital collections!</p>
             <p>🎁 All services are completely free!</p>
             <p>💬 Need access? Message <strong>@nightfuryhbq</strong> on Discord</p>
           </div>
