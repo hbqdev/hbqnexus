@@ -4,16 +4,68 @@
       "name": "Media Streaming",
       "services": [
         {
-          "name": "TinFlix Stream",
-          "url": "https://stream.tinflix.win",
-          "icon": "/assets/services/tinflix.svg",
-          "description": "Free streaming service with curated content library"
+          "name": "Moods Mix",
+          "url": "https://moods.hbqnexus.win/",
+          "icon": "/assets/services/moods-mix.svg",
+          "description": "🌲 Ambient sounds for focus and calm."
+        },
+        {
+          "name": "SonicLib",
+          "url": "https://soniclib.hbqnexus.win/",
+          "icon": "/assets/services/soniclib.svg",
+          "description": "🎧 Free Audible alternative with a growing library of audiobooks."
         },
         {
           "name": "TinFlix",
           "url": "https://tinflix.win",
           "icon": "/assets/services/tinflix-requests.svg",
-          "description": "The place where you request whatever you wanna watch. Anything and everything."
+          "description": "🎬 Request movies and shows for the TinFlix library. Simply login with your Plex credentials."
+        },
+        {
+          "name": "TinFlix Stream",
+          "url": "https://stream.tinflix.win",
+          "icon": "/assets/services/tinflix.svg",
+          "description": "🍿 Stream from our curated collection of movies and shows. Try the demo account!"
+        },
+        {
+          "name": "TinLit",
+          "url": "https://tinlit.win/",
+          "icon": "/assets/services/tinlit.svg",
+          "description": "📚 Your digital library of ebooks and comics. A great Kindle alternative."
+        }
+      ]
+    },
+    {
+      "name": "News",
+      "services": [
+        {
+          "name": "Nexus News",
+          "url": "https://news.hbqnexus.win/",
+          "icon": "/assets/services/nexus-news.svg",
+          "description": "📰 Browse news from across the web in one clean, ad-free interface. Your privacy-focused news aggregator."
+        }
+      ]
+    },
+    {
+      "name": "Tools",
+      "services": [
+        {
+          "name": "Chat",
+          "url": "https://chat.hbqnexus.win/",
+          "icon": "/assets/services/chat.svg",
+          "description": "🤖 Access cutting-edge AI models like Claude 3.5, GPT-4, Gemini, and more. Simply sign up to start chatting!"
+        },
+        {
+          "name": "IT tools",
+          "url": "https://tools.hbqnexus.win/",
+          "icon": "/assets/services/it-tools.svg",
+          "description": "🛠️ A comprehensive suite of professional development and IT tools, all in one convenient place."
+        },
+        {
+          "name": "Search",
+          "url": "https://search.hbqnexus.win/",
+          "icon": "/assets/services/search.svg",
+          "description": "🔍 Privacy-focused meta search engine that combines results from multiple sources, without ads or tracking."
         }
       ]
     }

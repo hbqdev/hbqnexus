@@ -75,11 +75,16 @@ function initializeResizableVideos() {
 }
 
 function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+  if (!date) return '';
+  
+  // Handle YYYY-MM-DD format
+  const [year, month, day] = date.split('-');
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  return `${months[parseInt(month) - 1]} ${parseInt(day)}, ${year}`;
 }
 </script>
 

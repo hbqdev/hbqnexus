@@ -22,11 +22,11 @@ export function usePosts() {
 
   async function loadPosts() {
     try {
-      const response = await fetch('/posts/manifest.json');
-      if (!response.ok) throw new Error('Failed to fetch posts manifest');
+      const response = await fetch('/src/posts/registry.json');
+      if (!response.ok) throw new Error('Failed to fetch posts registry');
       const data = await response.json();
-      posts.value = data.posts;
-      return data.posts;
+      posts.value = data.posts.filter(post => post.status === 'published');
+      return posts.value;
     } catch (error) {
       console.error('Error loading posts:', error);
       throw error;
@@ -43,7 +43,7 @@ export function usePosts() {
       const post = posts.value.find(p => p.slug === slug);
       if (!post) throw new Error('Post not found');
 
-      const response = await fetch(`/posts/${post.file}`);
+      const response = await fetch(`/src/posts/published/${slug}/content.md`);
       if (!response.ok) throw new Error('Failed to fetch post content');
       
       const markdown = await response.text();
