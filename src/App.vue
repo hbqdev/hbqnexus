@@ -3,7 +3,7 @@
     <nav class="nav">
       <div class="nav-content">
         <router-link to="/" class="nav-brand">
-          Home Hub
+          Nexus Hub
         </router-link>
         <div class="nav-links">
           <router-link to="/" class="nav-link" active-class="active">
