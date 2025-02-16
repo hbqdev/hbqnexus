@@ -35,7 +35,15 @@ const error = ref(null);
 
 async function loadPosts() {
   try {
-    const response = await fetch('/src/posts/registry.json');
+    let response;
+    try {
+      response = await fetch('/src/posts/registry.json');
+    } catch {
+      response = await fetch('/posts/registry.json');
+    }
+    if (!response.ok) {
+      response = await fetch('/posts/registry.json');
+    }
     const data = await response.json();
     posts.value = data.posts.sort((a, b) => new Date(b.date) - new Date(a.date));
     loading.value = false;

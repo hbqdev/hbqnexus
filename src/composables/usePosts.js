@@ -43,8 +43,13 @@ export function usePosts() {
       const post = posts.value.find(p => p.slug === slug);
       if (!post) throw new Error('Post not found');
 
-      const response = await fetch(`/src/posts/published/${slug}/content.md`);
-      if (!response.ok) throw new Error('Failed to fetch post content');
+      let response;
+      try {
+        response = await fetch(`/src/posts/published/${slug}/content.md`);
+        if (!response.ok) throw new Error();
+      } catch {
+        response = await fetch(`/src/posts/published/${slug}/content.md`);
+      }
       
       const markdown = await response.text();
       return {
