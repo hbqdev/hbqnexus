@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app-container">
     <nav class="nav">
       <div class="nav-content">
         <router-link to="/" class="nav-brand">
@@ -88,8 +88,10 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.app {
+.app-container {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .nav {
@@ -230,5 +232,11 @@ body {
 
 .announcement-banner strong {
   color: var(--accent-color);
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 </style> 
