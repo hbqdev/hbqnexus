@@ -4,56 +4,14 @@ APP_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 SERVICE_NAME="hbqnexus"
 
 function show_usage() {
-    echo -e "\n=== HBQ Nexus Service Manager ==="
-    PS3=$'\nSelect an option: '
-    options=(
-        "🟢 Start service"
-        "🔴 Stop service"
-        "🔄 Restart service"
-        "ℹ️  Show status"
-        "⬆️  Update and restart"
-        "📋 Show logs"
-        "👋 Exit"
-    )
-    select opt in "${options[@]}"
-    do
-        case $opt in
-            "🟢 Start service")
-                sudo systemctl start $SERVICE_NAME
-                show_status
-                break
-                ;;
-            "🔴 Stop service")
-                sudo systemctl stop $SERVICE_NAME
-                show_status
-                break
-                ;;
-            "🔄 Restart service")
-                sudo systemctl restart $SERVICE_NAME
-                show_status
-                break
-                ;;
-            "ℹ️  Show status")
-                show_status
-                break
-                ;;
-            "⬆️  Update and restart")
-                update_app
-                break
-                ;;
-            "📋 Show logs")
-                show_logs
-                break
-                ;;
-            "👋 Exit")
-                echo -e "\nGoodbye! 👋"
-                exit 0
-                ;;
-            *) 
-                echo "Invalid option"
-                ;;
-        esac
-    done
+    echo "Usage: $0 [command]"
+    echo "Commands:"
+    echo "  start   - Start the service"
+    echo "  stop    - Stop the service"
+    echo "  restart - Restart the service"
+    echo "  status  - Show service status"
+    echo "  update  - Pull latest changes and restart"
+    echo "  logs    - Show service logs"
 }
 
 function update_app() {
@@ -75,18 +33,33 @@ function update_app() {
     echo "Update complete!"
 }
 
-function show_status() {
+case "$1" in
+    start)
+        sudo systemctl start $SERVICE_NAME
+        ;;
+    stop)
+        sudo systemctl stop $SERVICE_NAME
+        ;;
+    restart)
+        sudo systemctl restart $SERVICE_NAME
+        ;;
+    status)
+        systemctl status $SERVICE_NAME
+        ;;
+    update)
+        update_app
+        ;;
+    logs)
+        journalctl -u $SERVICE_NAME -n 50 --no-pager
+        ;;
+    *)
+        show_usage
+        exit 1
+        ;;
+esac
+
+# Show current status after any action
+if [ "$1" != "status" ] && [ "$1" != "logs" ]; then
+    echo -e "\nCurrent service status:"
     systemctl status $SERVICE_NAME --no-pager
-}
-
-function show_logs() {
-    journalctl -u $SERVICE_NAME -n 50 --no-pager
-}
-
-# Main loop
-while true; do
-    clear
-    show_usage
-    echo -e "\nPress Enter to continue..."
-    read
-done 
+fi 
