@@ -16,7 +16,7 @@
           "description": "🎧 Free Audible alternative with a growing library of audiobooks. Use demouser/password to login"
         },
         {
-          "name": "TinFlix",
+          "name": "TinFlix Requests",
           "url": "https://tinflix.win",
           "icon": "/assets/services/tinflix-requests.svg",
           "description": "🎬 Request movies and shows for the TinFlix library. Simply login with your Plex credentials."
