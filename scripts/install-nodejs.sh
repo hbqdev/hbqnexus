@@ -21,7 +21,7 @@ OS=$(detect_os)
 echo "Detected OS: $OS"
 
 case $OS in
-    "Ubuntu" | "Debian GNU/Linux")
+    "Ubuntu" | "Debian GNU/Linux" | "Linux Mint")
         echo "Installing Node.js on Ubuntu/Debian..."
         # Add NodeSource repository and install Node.js
         sudo apt-get update
