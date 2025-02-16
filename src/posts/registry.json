@@ -4,9 +4,11 @@
       "slug": "welcome",
       "status": "published",
       "title": "Welcome",
-      "description": "welcome",
+      "description": "A gateway to my digital universe and self-hosted services",
       "tags": [
-        "welcome"
+        "welcome",
+        "introduction",
+        "nexus"
       ],
       "date": "2025-02-15",
       "lastModified": "2025-02-15",

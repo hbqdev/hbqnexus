@@ -1,90 +1,109 @@
 <template>
-  <div class="blog-list">
-    <h1 class="page-title">Blog Posts</h1>
-    <div class="posts-grid">
-      <router-link
-        v-for="post in posts"
-        :key="post.slug"
-        :to="{ name: 'blog-post', params: { slug: post.slug }}"
-        class="post-card"
-      >
-        <h2 class="post-title">{{ post.title }}</h2>
-        <time class="post-date">{{ formatDate(post.date) }}</time>
-        <p class="post-excerpt">{{ post.excerpt }}</p>
-      </router-link>
+  <div class="blog">
+    <h1>Blog</h1>
+    <div v-if="loading" class="loading">
+      Loading posts...
+    </div>
+    <div v-else-if="error" class="error">
+      {{ error }}
+    </div>
+    <div v-else class="posts">
+      <article v-for="post in posts" :key="post.slug" class="post-card">
+        <router-link :to="`/blog/${post.slug}`" class="post-link">
+          <h2>{{ post.title }}</h2>
+          <p class="post-description">{{ post.description }}</p>
+          <div class="post-meta">
+            <time>{{ new Date(post.date).toLocaleDateString() }}</time>
+            <div class="tags">
+              <span v-for="tag in post.tags" :key="tag" class="tag">
+                #{{ tag }}
+              </span>
+            </div>
+          </div>
+        </router-link>
+      </article>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { usePosts } from '../composables/usePosts';
 
-const { posts, loadPosts } = usePosts();
+const posts = ref([]);
+const loading = ref(true);
+const error = ref(null);
 
-onMounted(async () => {
-  await loadPosts();
-});
-
-function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+async function loadPosts() {
+  try {
+    const response = await fetch('/src/posts/registry.json');
+    const data = await response.json();
+    posts.value = data.posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    loading.value = false;
+  } catch (err) {
+    error.value = 'Failed to load posts';
+    loading.value = false;
+  }
 }
+
+onMounted(() => {
+  loadPosts();
+});
 </script>
 
 <style scoped>
-.blog-list {
-  padding: 2rem;
-  max-width: 1200px;
+.blog {
+  max-width: 800px;
   margin: 0 auto;
-}
-
-.page-title {
-  margin-bottom: 2rem;
-  font-size: 2rem;
-  font-weight: 600;
-}
-
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  padding: 2rem;
 }
 
 .post-card {
   background: var(--card-bg);
-  padding: 1.5rem;
   border-radius: 12px;
-  text-decoration: none;
-  color: var(--text-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s ease;
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px var(--shadow-color);
+  transform: translateY(-2px);
 }
 
-.post-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
+.post-link {
+  text-decoration: none;
+  color: inherit;
 }
 
-.post-date {
-  display: block;
-  font-size: 0.875rem;
+.post-description {
+  color: var(--text-color);
+  opacity: 0.8;
+  margin: 0.5rem 0;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
   color: var(--text-color);
   opacity: 0.7;
-  margin-bottom: 1rem;
 }
 
-.post-excerpt {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  opacity: 0.9;
+.tags {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tag {
+  background: var(--hover-color);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color);
 }
 </style> 

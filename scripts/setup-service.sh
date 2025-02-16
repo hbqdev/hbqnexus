@@ -15,8 +15,7 @@ After=network.target
 Type=simple
 User=$USER
 WorkingDirectory=$APP_PATH
-ExecStartPre=/usr/bin/npm run build
-ExecStart=/usr/bin/npm run dev
+ExecStart=/bin/bash -c '/usr/bin/npm run build && /usr/bin/npm run preview'
 Restart=always
 RestartSec=10
 Environment=NODE_ENV=production
