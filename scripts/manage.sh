@@ -1,5 +1,4 @@
 #!/bin/bash
-
 APP_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 SERVICE_NAME="hbqnexus"
 
