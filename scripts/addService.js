@@ -95,63 +95,73 @@ async function getValidUrl() {
   }
 }
 
-async function addService() {
+async function addServices() {
   try {
-    // Read existing services
-    const servicesData = JSON.parse(await fs.readFile(servicesPath, 'utf8'));
+    while (true) {
+      console.log('\n=== Add New Service ===');
+      
+      // Read existing services
+      const servicesData = JSON.parse(await fs.readFile(servicesPath, 'utf8'));
 
-    // Get categories and show selection
-    const categories = servicesData.categories.map(cat => cat.name);
-    const category = await selectCategory(categories);
+      // Get categories and show selection
+      const categories = servicesData.categories.map(cat => cat.name);
+      const category = await selectCategory(categories);
 
-    // Get service details with validation
-    console.log('\nEnter service details:');
-    const name = await question('Service name: ');
-    const url = await getValidUrl();  // Using the new validation function
-    const description = await question('Service description: ');
-    const useCustomIcon = (await question('Do you have a custom icon? (y/n): ')).toLowerCase() === 'y';
+      // Get service details with validation
+      console.log('\nEnter service details:');
+      const name = await question('Service name: ');
+      const url = await getValidUrl();
+      const description = await question('Service description: ');
+      const useCustomIcon = (await question('Do you have a custom icon? (y/n): ')).toLowerCase() === 'y';
 
-    // Generate or use custom icon
-    const iconFileName = name.toLowerCase().replace(/\s+/g, '-') + '.svg';
-    const iconPath = path.join(svgPath, iconFileName);
-    const iconRelativePath = `/assets/services/${iconFileName}`;
+      // Generate or use custom icon
+      const iconFileName = name.toLowerCase().replace(/\s+/g, '-') + '.svg';
+      const iconPath = path.join(svgPath, iconFileName);
+      const iconRelativePath = `/assets/services/${iconFileName}`;
 
-    if (useCustomIcon) {
-      console.log(`\nPlease add your icon to: ${iconPath}`);
-    } else {
-      // Generate placeholder SVG
-      await fs.mkdir(svgPath, { recursive: true });
-      await fs.writeFile(iconPath, generatePlaceholderSVG(name));
-      console.log(`\nGenerated placeholder icon at: ${iconPath}`);
+      if (useCustomIcon) {
+        console.log(`\nPlease add your icon to: ${iconPath}`);
+      } else {
+        // Generate placeholder SVG
+        await fs.mkdir(svgPath, { recursive: true });
+        await fs.writeFile(iconPath, generatePlaceholderSVG(name));
+        console.log(`\nGenerated placeholder icon at: ${iconPath}`);
+      }
+
+      // Update services.json
+      let categoryObj = servicesData.categories.find(cat => cat.name === category);
+      if (!categoryObj) {
+        categoryObj = {
+          name: category,
+          services: []
+        };
+        servicesData.categories.push(categoryObj);
+      }
+
+      categoryObj.services.push({
+        name,
+        url,
+        icon: iconRelativePath,
+        description
+      });
+
+      // Sort categories and services alphabetically
+      servicesData.categories.sort((a, b) => a.name.localeCompare(b.name));
+      servicesData.categories.forEach(cat => {
+        cat.services.sort((a, b) => a.name.localeCompare(b.name));
+      });
+
+      // Write back to file
+      await fs.writeFile(servicesPath, JSON.stringify(servicesData, null, 2));
+      console.log('\n✅ Service added successfully!');
+
+      // Ask if user wants to add another service
+      const addAnother = (await question('\nAdd another service? (y/n): ')).toLowerCase();
+      if (addAnother !== 'y') {
+        console.log('\nGoodbye! 👋');
+        break;
+      }
     }
-
-    // Update services.json
-    let categoryObj = servicesData.categories.find(cat => cat.name === category);
-    if (!categoryObj) {
-      categoryObj = {
-        name: category,
-        services: []
-      };
-      servicesData.categories.push(categoryObj);
-    }
-
-    categoryObj.services.push({
-      name,
-      url,
-      icon: iconRelativePath,
-      description
-    });
-
-    // Sort categories and services alphabetically
-    servicesData.categories.sort((a, b) => a.name.localeCompare(b.name));
-    servicesData.categories.forEach(cat => {
-      cat.services.sort((a, b) => a.name.localeCompare(b.name));
-    });
-
-    // Write back to file
-    await fs.writeFile(servicesPath, JSON.stringify(servicesData, null, 2));
-    console.log('\nService added successfully!');
-
   } catch (error) {
     console.error('Error:', error);
   } finally {
@@ -159,4 +169,5 @@ async function addService() {
   }
 }
 
-addService(); 
+// Change the entry point to use the new function
+addServices(); 

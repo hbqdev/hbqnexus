@@ -24,7 +24,13 @@
 
     <router-view v-slot="{ Component }">
       <transition name="page" mode="out-in">
-        <component :is="Component" />
+        <div class="page-wrapper">
+          <div class="announcement-banner">
+            <p>🎁 All services are completely free!</p>
+            <p>💬 Need access? Message <strong>@nightfuryhbq</strong> on Discord</p>
+          </div>
+          <component :is="Component" />
+        </div>
       </transition>
     </router-view>
 
@@ -203,5 +209,26 @@ body {
   cursor: pointer;
   font-size: inherit;
   font-weight: inherit;
+}
+
+.page-wrapper {
+  position: relative;
+}
+
+.announcement-banner {
+  background: var(--card-bg);
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.announcement-banner p {
+  margin: 0.5rem 0;
+  color: var(--text-color);
+}
+
+.announcement-banner strong {
+  color: var(--accent-color);
 }
 </style> 

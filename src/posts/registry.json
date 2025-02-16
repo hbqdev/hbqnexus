@@ -1,0 +1,16 @@
+{
+  "posts": [
+    {
+      "slug": "welcome",
+      "status": "published",
+      "title": "Welcome",
+      "description": "welcome",
+      "tags": [
+        "welcome"
+      ],
+      "date": "2025-02-15",
+      "lastModified": "2025-02-15",
+      "version": 1
+    }
+  ]
+}
