@@ -19,7 +19,7 @@
           "name": "TinFlix Requests",
           "url": "https://tinflix.win",
           "icon": "/assets/services/tinflix-requests.svg",
-          "description": "🎬 Request movies and shows for the TinFlix library. Simply login with your Plex credentials."
+          "description": "🎬 Request movies and shows for the TinFlix/Plex Server. Simply login with your Plex credentials."
         },
         {
           "name": "TinFlix Stream",
