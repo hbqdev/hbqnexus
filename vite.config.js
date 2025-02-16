@@ -3,15 +3,21 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
+  publicDir: 'public',
   build: {
-    // Copy posts directory to dist
+    outDir: 'dist',
+    assetsDir: 'assets',
     rollupOptions: {
       input: {
         main: 'index.html',
-      },
-    },
-    // Ensure src/posts is copied to dist
-    assetsInclude: ['**/*.md', '**/*.json'],
+      }
+    }
+  },
+  // Copy src/posts to dist/src/posts during build
+  copy: {
+    targets: [
+      { src: 'src/posts', dest: 'dist/src' }
+    ]
   },
   server: {
     fs: {

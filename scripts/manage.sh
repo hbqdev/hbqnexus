@@ -72,6 +72,7 @@ function update_app() {
     sudo systemctl restart $SERVICE_NAME
     
     echo "Update complete!"
+    show_status
 }
 
 function show_status() {

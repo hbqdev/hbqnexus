@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
+    "build": "./scripts/build.sh",
     "preview": "vite preview --host",
     "add-service": "node scripts/addService.js",
     "post": "node scripts/post-manager/index.js"
