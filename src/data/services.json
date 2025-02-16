@@ -113,7 +113,7 @@
           "name": "Search",
           "url": "https://search.hbqnexus.win/",
           "icon": "/assets/services/search.svg",
-          "description": "🔍 Privacy-focused meta search engine that combines results from multiple sources, without ads or tracking."
+          "description": "🔍 Privacy-focused meta search engine that combines results from Google, Bing, and DuckDuckGo..., without ads or tracking."
         }
       ]
     }
