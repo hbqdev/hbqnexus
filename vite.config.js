@@ -8,17 +8,24 @@ export default defineConfig({
       // Allow serving files from one level up to the project root
       allow: ['..']
     },
-    // Allow specific hosts
-    host: true,
+    // Allow all hosts
+    host: '0.0.0.0',
     // Force port
     port: 5173,
-    // Enable CORS
-    cors: true,
-    allowedHosts: [
-      'hub.hbqnexus.win',
-      'localhost',
-      '127.0.0.1'
-    ]
+    // Enhanced CORS configuration
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    },
+    // Allow any hostname
+    allowedHosts: 'all',
+    // Add headers for security
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
   },
   // Base URL for production
   base: '/',
