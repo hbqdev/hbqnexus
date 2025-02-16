@@ -15,6 +15,17 @@ const rl = readline.createInterface({
 
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
+const serviceEmojis = {
+  'Media & Streaming': ['📺', '🎬', '🎵', '🎮'],
+  'Storage & Backup': ['💾', '📁', '🗄️', '📦'],
+  'Tools & Utilities': ['🔧', '⚙️', '🛠️', '🔨'],
+  'Security & Privacy': ['🔒', '🛡️', '🔐', '🔑'],
+  'Documentation': ['📚', '📝', '📖', '📋'],
+  'Web Services': ['🌐', '🔗', '🌍', '💻'],
+  'Analytics': ['📊', '📈', '📉', '💹'],
+  'Other': ['✨', '🎯', '🎪', '🔮']
+};
+
 async function selectCategory(categories) {
   console.log('\nSelect a category:');
   console.log('0. Create new category');
@@ -37,6 +48,30 @@ async function selectCategory(categories) {
   }
   
   // If not a number or invalid selection, treat as new category name
+  return answer.trim();
+}
+
+async function selectEmoji(category) {
+  const emojis = serviceEmojis[category] || serviceEmojis['Other'];
+  
+  console.log('\nSelect an emoji for the service:');
+  emojis.forEach((emoji, index) => {
+    console.log(`${index + 1}. ${emoji}`);
+  });
+  console.log('0. Enter custom emoji');
+
+  const answer = await question('\nEnter number (or paste emoji): ');
+  const num = parseInt(answer);
+  
+  if (!isNaN(num)) {
+    if (num === 0) {
+      return await question('Enter custom emoji: ');
+    }
+    if (num > 0 && num <= emojis.length) {
+      return emojis[num - 1];
+    }
+  }
+  
   return answer.trim();
 }
 
@@ -107,11 +142,13 @@ async function addServices() {
       const categories = servicesData.categories.map(cat => cat.name);
       const category = await selectCategory(categories);
 
-      // Get service details with validation
+      // Get service details with emoji selection
       console.log('\nEnter service details:');
       const name = await question('Service name: ');
       const url = await getValidUrl();
-      const description = await question('Service description: ');
+      const emoji = await selectEmoji(category);
+      const description = await question('Service description (without emoji): ');
+      const fullDescription = `${emoji} ${description}`;
       const useCustomIcon = (await question('Do you have a custom icon? (y/n): ')).toLowerCase() === 'y';
 
       // Generate or use custom icon
@@ -142,7 +179,7 @@ async function addServices() {
         name,
         url,
         icon: iconRelativePath,
-        description
+        description: fullDescription
       });
 
       // Sort categories and services alphabetically
