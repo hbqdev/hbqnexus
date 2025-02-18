@@ -129,7 +129,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { marked } from 'marked';
-import DOMPurify from 'isomorphic-dompurify';
+import DOMPurify from 'dompurify';
 
 const posts = ref([]);
 const sharedContent = ref([]);
