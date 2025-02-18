@@ -2,6 +2,7 @@
   <div class="gallery-container">
     <div class="gallery-header">
       <h1>Digital Art Gallery</h1>
+      <h2>Below are some of my digital art pieces.</h2>
       <div class="grid-controls">
         <button 
           v-for="size in gridSizes" 
