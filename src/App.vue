@@ -30,8 +30,8 @@
         <div class="page-wrapper">
           <div class="announcement-banner">
             <p>🌐 Welcome to my self-hosted services and digital collections!</p>
-            <p>🎁 All services are completely free!</p>
-            <p>💬 Need access? Message <strong>@nightfuryhbq</strong> on Discord</p>
+            <p>🎁 All services are completely free! All should have a demo account for you to try out.</p>
+            <p>💬 Need access or a personal account? Message <strong>@nightfuryhbq</strong> on Discord</p>
           </div>
           <component :is="Component" />
         </div>
