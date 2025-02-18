@@ -10,21 +10,30 @@
     "preview": "vite preview --host",
     "add-service": "node scripts/addService.js",
     "post": "node scripts/post-manager/index.js",
-    "gallery": "node scripts/gallery-manager.js"
+    "gallery": "node scripts/gallery-manager.js",
+    "curator": "node scripts/content-curator.js"
   },
   "dependencies": {
-    "highlight.js": "^11.11.1",
-    "marked": "^4.3.0",
-    "vue": "^3.4.15",
-    "vue-router": "^4.2.5",
-    "commander": "^11.0.0",
-    "inquirer": "^9.2.10",
     "chalk": "^5.3.0",
     "chokidar": "^3.5.3",
+    "commander": "^11.0.0",
     "express": "^4.18.2",
+    "fetch": "^1.1.0",
+    "highlight.js": "^11.11.1",
+    "inquirer": "^9.2.10",
+    "jsdom": "^22.1.0",
+    "marked": "^4.3.0",
+    "node-fetch": "^3.3.0",
     "open": "^9.1.0",
     "sharp": "^0.32.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5",
+    "dompurify": "^3.0.6",
+    "@extractus/article-extractor": "^7.3.1",
+    "undici": "^5.28.3",
+    "metascraper": "^5.45.0",
+    "metascraper-date": "^5.45.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
