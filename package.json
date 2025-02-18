@@ -29,7 +29,7 @@
     "uuid": "^9.0.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
-    "dompurify": "^3.0.6",
+    "isomorphic-dompurify": "^1.9.0",
     "@extractus/article-extractor": "^7.3.1",
     "undici": "^5.28.3",
     "metascraper": "^5.45.0",

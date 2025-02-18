@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import { fetch } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
 import { extract } from '@extractus/article-extractor';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { JSDOM } from 'jsdom';
 import metascraper from 'metascraper';
 import metascraperDate from 'metascraper-date';
@@ -91,12 +91,8 @@ async function extractContent(url) {
       publishDate = new Date();
     }
     
-    // Create a virtual DOM to clean and process the content
-    const window = new JSDOM('').window;
-    const purify = DOMPurify(window);
-    
     // Clean the content and ensure images are preserved
-    const cleanContent = purify.sanitize(article.content, {
+    const cleanContent = DOMPurify.sanitize(article.content, {
       ADD_TAGS: ['img'],
       ADD_ATTR: ['src', 'alt'],
       KEEP_CONTENT: true,

@@ -28,6 +28,21 @@ function show_usage() {
                 break
                 ;;
             "🔄 Restart service")
+                echo "Performing clean restart..."
+                cd "$APP_PATH"
+                
+                # Stop the service
+                sudo systemctl stop $SERVICE_NAME
+                
+                # Remove dist directory
+                echo "Cleaning build directory..."
+                rm -rf dist
+                
+                # Rebuild
+                echo "Rebuilding application..."
+                npm run build
+                
+                # Start service
                 sudo systemctl restart $SERVICE_NAME
                 show_status
                 break
