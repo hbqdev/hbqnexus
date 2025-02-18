@@ -1,21 +1,44 @@
 {
-  "categories": [
-    "Digital Art",
-    "Paintings",
-    "Illustrations",
-    "AI Generated",
-    "Mixed Media"
-  ],
   "items": [
     {
       "id": "a1b452f8-c3da-48f4-95ed-5cacb1d3ef94",
       "title": "Meadow Lake",
       "description": "A corner of the world somewhere",
-      "category": "Paintings",
-      "size": "normal",
       "thumbnail": "/assets/gallery/thumbnails/a1b452f8-c3da-48f4-95ed-5cacb1d3ef94_thumb.jpg",
       "fullImage": "/assets/gallery/images/a1b452f8-c3da-48f4-95ed-5cacb1d3ef94.jpg",
       "dateAdded": "2025-02-18T05:20:02.490Z"
+    },
+    {
+      "id": "4fe56c4c-1b2b-49c3-888f-51a92e053188",
+      "title": "Blue Moon",
+      "description": "The stars and Moon.",
+      "thumbnail": "/assets/gallery/thumbnails/4fe56c4c-1b2b-49c3-888f-51a92e053188_thumb.jpg",
+      "fullImage": "/assets/gallery/images/4fe56c4c-1b2b-49c3-888f-51a92e053188.jpg",
+      "dateAdded": "2025-02-18T05:26:47.429Z"
+    },
+    {
+      "id": "dec3a047-dffa-4f26-a163-a8f5e18bee7b",
+      "title": "Mountain Lake Falls",
+      "description": "A Summer afternoon",
+      "thumbnail": "/assets/gallery/thumbnails/dec3a047-dffa-4f26-a163-a8f5e18bee7b_thumb.jpg",
+      "fullImage": "/assets/gallery/images/dec3a047-dffa-4f26-a163-a8f5e18bee7b.jpg",
+      "dateAdded": "2025-02-18T05:27:17.988Z"
+    },
+    {
+      "id": "ea2630ac-6a94-40fd-864a-30947f922d54",
+      "title": "Mountain Retreat",
+      "description": "Leave your worries behind",
+      "thumbnail": "/assets/gallery/thumbnails/ea2630ac-6a94-40fd-864a-30947f922d54_thumb.jpg",
+      "fullImage": "/assets/gallery/images/ea2630ac-6a94-40fd-864a-30947f922d54.jpg",
+      "dateAdded": "2025-02-18T05:27:31.645Z"
+    },
+    {
+      "id": "c5969f64-363d-4084-ac3d-6f84702e0a88",
+      "title": "Winter Splendor",
+      "description": "The cold doesn't bother me anyway",
+      "thumbnail": "/assets/gallery/thumbnails/c5969f64-363d-4084-ac3d-6f84702e0a88_thumb.jpg",
+      "fullImage": "/assets/gallery/images/c5969f64-363d-4084-ac3d-6f84702e0a88.jpg",
+      "dateAdded": "2025-02-18T05:27:49.694Z"
     }
   ]
 }

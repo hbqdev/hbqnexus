@@ -48,29 +48,7 @@ async function processImage(filename) {
     {
       type: 'input',
       name: 'description',
-      message: 'Enter image description:',
-      validate: input => input.length > 0
-    },
-    {
-      type: 'list',
-      name: 'category',
-      message: 'Select category:',
-      choices: [
-        'Digital Art',
-        'Paintings',
-        'Illustrations',
-        'AI Generated',
-        'Mixed Media'
-      ]
-    },
-    {
-      type: 'list',
-      name: 'size',
-      message: 'Select display size:',
-      choices: [
-        { name: 'Normal', value: 'normal' },
-        { name: 'Large', value: 'large' }
-      ]
+      message: 'Enter image description (optional):',
     }
   ]);
 
@@ -97,9 +75,7 @@ async function processImage(filename) {
   galleryData.items.push({
     id,
     title: answers.title,
-    description: answers.description,
-    category: answers.category,
-    size: answers.size,
+    description: answers.description || '',
     thumbnail: `/assets/gallery/thumbnails/${thumbnailName}`,
     fullImage: `/assets/gallery/images/${newImageName}`,
     dateAdded: new Date().toISOString()
