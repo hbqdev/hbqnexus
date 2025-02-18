@@ -25,13 +25,13 @@
           "name": "TinFlix Stream",
           "url": "https://stream.tinflix.win",
           "icon": "/assets/services/tinflix.svg",
-          "description": "🍿 Stream from our curated collection of movies and shows. Try the demo account!"
+          "description": "🍿 Stream from our curated collection of movies and shows. Try the demo account on the login page."
         },
         {
           "name": "TinLit",
           "url": "https://tinlit.win/",
           "icon": "/assets/services/tinlit.svg",
-          "description": "📚 Your digital library of ebooks and comics. A great Kindle alternative. Use demouser/password to login"
+          "description": "📚 A digital library of ebooks and comics. A great Kindle alternative. Use demouser/password to login"
         }
       ]
     },
