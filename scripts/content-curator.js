@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import { fetch } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
 import { extract } from '@extractus/article-extractor';
-import DOMPurify from 'isomorphic-dompurify';
+import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import metascraper from 'metascraper';
 import metascraperDate from 'metascraper-date';
@@ -21,6 +21,10 @@ const CONTENT_FILE = path.join(__dirname, '../src/data/shared-content.json');
 const scraper = metascraper([
   metascraperDate()
 ]);
+
+// Create a window for server-side DOMPurify
+const window = new JSDOM('').window;
+DOMPurify.sanitize = DOMPurify(window).sanitize;
 
 async function extractContent(url) {
   try {
