@@ -1,0 +1,21 @@
+{
+  "categories": [
+    "Digital Art",
+    "Paintings",
+    "Illustrations",
+    "AI Generated",
+    "Mixed Media"
+  ],
+  "items": [
+    {
+      "id": "a1b452f8-c3da-48f4-95ed-5cacb1d3ef94",
+      "title": "Meadow Lake",
+      "description": "A corner of the world somewhere",
+      "category": "Paintings",
+      "size": "normal",
+      "thumbnail": "/assets/gallery/thumbnails/a1b452f8-c3da-48f4-95ed-5cacb1d3ef94_thumb.jpg",
+      "fullImage": "/assets/gallery/images/a1b452f8-c3da-48f4-95ed-5cacb1d3ef94.jpg",
+      "dateAdded": "2025-02-18T05:20:02.490Z"
+    }
+  ]
+}

@@ -12,6 +12,9 @@
           <router-link to="/blog" class="nav-link" active-class="active">
             Blog
           </router-link>
+          <router-link to="/gallery" class="nav-link" active-class="active">
+            Gallery
+          </router-link>
           <button @click="showAbout = true" class="nav-link about-button">
             About
           </button>
