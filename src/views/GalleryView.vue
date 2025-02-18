@@ -2,28 +2,28 @@
   <div class="gallery-container">
     <div class="gallery-header">
       <h1>Digital Art Gallery</h1>
-      <div class="gallery-filters">
+      <div class="grid-controls">
         <button 
-          v-for="category in categories" 
-          :key="category"
-          :class="['filter-btn', { active: activeCategory === category }]"
-          @click="setCategory(category)"
+          v-for="size in gridSizes" 
+          :key="size"
+          :class="['grid-btn', { active: currentGridSize === size }]"
+          @click="setGridSize(size)"
         >
-          {{ category }}
+          {{ size }}x{{ size }}
         </button>
       </div>
     </div>
 
-    <TransitionGroup 
-      name="gallery" 
-      tag="div" 
+    <div 
       class="gallery-grid"
+      :style="{ 
+        'grid-template-columns': `repeat(${currentGridSize}, 1fr)`
+      }"
     >
       <div
-        v-for="item in filteredItems"
+        v-for="item in items"
         :key="item.id"
         class="gallery-item"
-        :class="item.size"
         @click="openModal(item)"
       >
         <div class="item-inner">
@@ -34,11 +34,11 @@
           >
           <div class="item-overlay">
             <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
+            <p v-if="item.description">{{ item.description }}</p>
           </div>
         </div>
       </div>
-    </TransitionGroup>
+    </div>
 
     <transition name="modal">
       <div v-if="selectedItem" class="modal" @click="closeModal">
@@ -47,8 +47,7 @@
           <img :src="selectedItem.fullImage" :alt="selectedItem.title">
           <div class="modal-info">
             <h2>{{ selectedItem.title }}</h2>
-            <p>{{ selectedItem.description }}</p>
-            <p class="modal-category">{{ selectedItem.category }}</p>
+            <p v-if="selectedItem.description">{{ selectedItem.description }}</p>
           </div>
         </div>
       </div>
@@ -61,17 +60,12 @@ import { ref, computed, onMounted } from 'vue';
 import galleryData from '../data/gallery.json';
 
 const items = ref([]);
-const categories = ref(galleryData.categories);
-const activeCategory = ref('All');
 const selectedItem = ref(null);
+const gridSizes = [2, 3, 4, 5];
+const currentGridSize = ref(3);
 
-const filteredItems = computed(() => {
-  if (activeCategory.value === 'All') return items.value;
-  return items.value.filter(item => item.category === activeCategory.value);
-});
-
-function setCategory(category) {
-  activeCategory.value = category;
+function setGridSize(size) {
+  currentGridSize.value = size;
 }
 
 function openModal(item) {
@@ -105,33 +99,31 @@ onMounted(async () => {
   text-align: center;
 }
 
-.gallery-filters {
+.grid-controls {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  flex-wrap: wrap;
   margin: 1rem 0;
 }
 
-.filter-btn {
+.grid-btn {
   background: var(--card-bg);
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--text-color);
 }
 
-.filter-btn.active {
+.grid-btn.active {
   background: var(--accent-color);
   color: white;
 }
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  gap: 1rem;
   padding: 1rem;
 }
 
@@ -140,23 +132,15 @@ onMounted(async () => {
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.gallery-item.large {
-  grid-column: span 2;
-  grid-row: span 2;
+  aspect-ratio: 1;
 }
 
 .item-inner {
   position: relative;
-  padding-bottom: 100%;
+  height: 100%;
 }
 
 .gallery-item img {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -186,22 +170,6 @@ onMounted(async () => {
 
 .gallery-item:hover img {
   transform: scale(1.1);
-}
-
-/* Gallery transitions */
-.gallery-move {
-  transition: transform 0.6s ease;
-}
-
-.gallery-enter-active,
-.gallery-leave-active {
-  transition: all 0.6s ease;
-}
-
-.gallery-enter-from,
-.gallery-leave-to {
-  opacity: 0;
-  transform: scale(0.9);
 }
 
 /* Modal styles */
@@ -273,13 +241,13 @@ onMounted(async () => {
 
 @media (max-width: 768px) {
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr) !important;
   }
+}
 
-  .gallery-item.large {
-    grid-column: span 1;
-    grid-row: span 1;
+@media (max-width: 480px) {
+  .gallery-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 </style> 
