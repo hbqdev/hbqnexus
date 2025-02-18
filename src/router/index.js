@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import BlogView from '../views/BlogView.vue';
 import BlogPostView from '../views/BlogPostView.vue';
+import GalleryView from '../views/GalleryView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +22,11 @@ const router = createRouter({
       name: 'blog-post',
       component: BlogPostView,
       props: true,
+    },
+    {
+      path: '/gallery',
+      name: 'gallery',
+      component: GalleryView,
     },
   ],
 });
