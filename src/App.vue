@@ -18,6 +18,9 @@
           <button @click="showAbout = true" class="nav-link about-button">
             About
           </button>
+          <button @click="showContactModal = true" class="contact-btn">
+            Contact
+          </button>
           <button @click="toggleTheme" class="theme-toggle" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
             <span class="theme-icon">{{ currentTheme === 'dark' ? '🌞' : '🌙' }}</span>
           </button>
@@ -39,6 +42,10 @@
     </router-view>
 
     <AboutModal :is-open="showAbout" @close="showAbout = false" />
+    <ContactModal 
+      :show="showContactModal"
+      @close="showContactModal = false"
+    />
   </div>
 </template>
 
@@ -46,9 +53,11 @@
 import { ref } from 'vue';
 import { useTheme } from './composables/useTheme';
 import AboutModal from './components/AboutModal.vue';
+import ContactModal from './components/ContactModal.vue';
 
 const { currentTheme, setTheme } = useTheme();
 const showAbout = ref(false);
+const showContactModal = ref(false);
 
 function toggleTheme() {
   setTheme(currentTheme.value === 'dark' ? 'light' : 'dark');
@@ -130,21 +139,26 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
 }
 
-.nav-link {
+.nav-link, .contact-btn {
   color: var(--text-color);
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   transition: all 0.2s ease;
   font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
 }
 
-.nav-link:hover {
+.nav-link:hover, .contact-btn:hover {
   background: var(--hover-color);
+  color: var(--accent-color);
 }
 
 .nav-link.active {
@@ -242,5 +256,19 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+.contact-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: color 0.3s ease;
+}
+
+.contact-btn:hover {
+  color: var(--accent-color);
 }
 </style> 
