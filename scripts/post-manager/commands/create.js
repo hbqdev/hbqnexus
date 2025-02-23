@@ -15,7 +15,6 @@ function getCurrentDate() {
 
 export async function createPost() {
   try {
-    // Only get title from user
     const { title } = await inquirer.prompt([
       {
         type: 'input',
@@ -32,7 +31,7 @@ export async function createPost() {
       .replace(/(^-|-$)/g, '');
 
     // Create post directory structure
-    const postDir = path.join(DRAFTS_DIR, slug);
+    const postDir = path.join(POSTS_DIR, 'posts', slug);
     const assetsDir = path.join(postDir, 'assets');
     
     await fs.mkdir(postDir, { recursive: true });
@@ -45,11 +44,11 @@ export async function createPost() {
     const metadata = {
       title,
       slug,
-      description: 'To be added',  // Placeholder
-      tags: [],                    // Empty initially
+      description: 'To be added',
+      tags: [],
       date: getCurrentDate(),
       lastModified: getCurrentDate(),
-      status: 'draft',
+      author: 'Tin Tran (HBQ)',
       version: 1
     };
 
@@ -73,11 +72,7 @@ export async function createPost() {
       // Registry doesn't exist yet, will create new
     }
 
-    registry.posts.push({
-      slug,
-      status: 'draft',
-      ...metadata
-    });
+    registry.posts.push(metadata);
 
     await fs.writeFile(registryPath, JSON.stringify(registry, null, 2));
 
@@ -85,12 +80,8 @@ export async function createPost() {
     console.log(chalk.blue('\nPost details:'));
     console.log(chalk.gray('----------------'));
     console.log(chalk.white(`Title: ${title}`));
-    console.log(chalk.white(`Draft location: ${path.join(postDir, 'content.md')}`));
+    console.log(chalk.white(`Location: ${path.join(postDir, 'content.md')}`));
     console.log(chalk.gray('----------------'));
-    console.log(chalk.yellow('\nNext steps:'));
-    console.log(chalk.white(`1. Edit your post: ${path.join(postDir, 'content.md')}`));
-    console.log(chalk.white(`2. Add media files to: ${assetsDir}`));
-    console.log(chalk.white(`3. Preview your post: npm run post preview ${slug}`));
 
   } catch (error) {
     console.error(chalk.red('Error creating post:'), error);

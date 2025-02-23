@@ -31,7 +31,7 @@
             <h2>{{ post.title }}</h2>
             <p class="post-description">{{ post.description }}</p>
             <div class="post-meta">
-              <time>{{ new Date(post.date).toLocaleDateString() }}</time>
+              <time>{{ formatDate(post.date) }}</time>
               <div class="tags">
                 <span v-for="tag in post.tags" :key="tag" class="tag">
                   #{{ tag }}
@@ -188,13 +188,17 @@ async function loadPosts() {
   }
 }
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }).format(date);
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  
+  // Handle YYYY-MM-DD format
+  const [year, month, day] = dateStr.split('-');
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  return `${months[parseInt(month) - 1]} ${parseInt(day)}, ${year}`;
 }
 
 onMounted(() => {

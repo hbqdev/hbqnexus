@@ -25,7 +25,7 @@ export function usePosts() {
       const response = await fetch('/src/posts/registry.json');
       if (!response.ok) throw new Error('Failed to fetch posts registry');
       const data = await response.json();
-      posts.value = data.posts.filter(post => post.status === 'published');
+      posts.value = data.posts;
       return posts.value;
     } catch (error) {
       console.error('Error loading posts:', error);
@@ -43,13 +43,8 @@ export function usePosts() {
       const post = posts.value.find(p => p.slug === slug);
       if (!post) throw new Error('Post not found');
 
-      let response;
-      try {
-        response = await fetch(`/src/posts/published/${slug}/content.md`);
-        if (!response.ok) throw new Error();
-      } catch {
-        response = await fetch(`/src/posts/published/${slug}/content.md`);
-      }
+      const response = await fetch(`/src/posts/posts/${slug}/content.md`);
+      if (!response.ok) throw new Error('Failed to load post content');
       
       const markdown = await response.text();
       return {

@@ -18,7 +18,7 @@ export async function previewPost(slug) {
       );
       
       const choices = registry.posts.map(post => ({
-        name: `${post.title} (${post.status})`,
+        name: post.title,
         value: post.slug
       }));
 
@@ -34,16 +34,9 @@ export async function previewPost(slug) {
       slug = answer.slug;
     }
 
-    // Find post location
-    const draftPath = path.join(POSTS_DIR, 'drafts', slug);
-    const publishedPath = path.join(POSTS_DIR, 'published', slug);
+    const postPath = path.join(POSTS_DIR, 'posts', slug);
     
-    let postPath;
-    if (await pathExists(draftPath)) {
-      postPath = draftPath;
-    } else if (await pathExists(publishedPath)) {
-      postPath = publishedPath;
-    } else {
+    if (!await pathExists(postPath)) {
       throw new Error(`Post "${slug}" not found`);
     }
 

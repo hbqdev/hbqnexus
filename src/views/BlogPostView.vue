@@ -4,6 +4,9 @@
       <h1 class="post-title">{{ post.title }}</h1>
       <time class="post-date">{{ formatDate(post.date) }}</time>
       <div class="post-body" v-html="post.content" ref="postBody"></div>
+      <div class="post-footer">
+        <span class="post-author">By {{ post.author }}</span>
+      </div>
     </article>
     <router-link to="/blog" class="back-link">
       ← Back to Blog
@@ -253,5 +256,18 @@ function formatDate(date) {
 .post-content {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.post-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.post-author {
+  font-size: 1rem;
+  font-style: italic;
 }
 </style> 
