@@ -118,6 +118,4 @@ These aren't just lifestyle choices—they're acts of resistance against a machi
 
 I know my words alone won't topple the disconnection machine. But with each act of resistance, each choice for community over isolation, we build momentum for systemic change. The machine runs on our compliance—let's give it something else entirely.
 
-**Further Reading**:  
-- Watch: [Connected's episode on Digits](https://www.youtube.com/watch?v=zyr4qORDu2A)
-- Reflect: Consider Thich Nhat Hanh's insight: "We are here to awaken from the illusion of our separateness."
+"We are here to awaken from the illusion of our separateness." - Thich Nhat Hanh
