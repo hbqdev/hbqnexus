@@ -17,7 +17,7 @@ export async function editPost(slug) {
       );
       
       const choices = registry.posts.map(post => ({
-        name: `${post.title} (${post.status})`,
+        name: post.title,
         value: post.slug
       }));
 
@@ -33,16 +33,9 @@ export async function editPost(slug) {
       slug = answer.slug;
     }
 
-    // Find post location (draft or published)
-    const draftPath = path.join(POSTS_DIR, 'drafts', slug);
-    const publishedPath = path.join(POSTS_DIR, 'published', slug);
+    const postPath = path.join(POSTS_DIR, 'posts', slug);
     
-    let postPath;
-    if (await pathExists(draftPath)) {
-      postPath = draftPath;
-    } else if (await pathExists(publishedPath)) {
-      postPath = publishedPath;
-    } else {
+    if (!await pathExists(postPath)) {
       throw new Error(`Post "${slug}" not found`);
     }
 
@@ -53,12 +46,11 @@ export async function editPost(slug) {
 
     // Open content.md in default editor
     const contentPath = path.join(postPath, 'content.md');
-    const editor = process.env.EDITOR || 'code'; // Defaults to VS Code
+    const editor = process.env.EDITOR || 'code';
     
     console.log(chalk.blue('\nOpening post in editor...'));
     console.log(chalk.gray('----------------'));
     console.log(chalk.white(`Title: ${metadata.title}`));
-    console.log(chalk.white(`Status: ${metadata.status}`));
     console.log(chalk.white(`Version: ${metadata.version}`));
     console.log(chalk.gray('----------------\n'));
 
@@ -75,13 +67,8 @@ export async function editPost(slug) {
     });
 
     // Update metadata with current timestamp
-    metadata.lastModified = getCurrentDate();  // Only update lastModified, keep original date
+    metadata.lastModified = getCurrentDate();
     metadata.version += 1;
-    metadata.history.push({
-      version: metadata.version,
-      date: getCurrentDate(),                 // Use current time
-      description: 'Content updated'
-    });
 
     await fs.writeFile(
       path.join(postPath, 'metadata.json'),
@@ -95,11 +82,7 @@ export async function editPost(slug) {
     
     const postIndex = registry.posts.findIndex(p => p.slug === slug);
     if (postIndex !== -1) {
-      registry.posts[postIndex] = {
-        ...registry.posts[postIndex],
-        modified: metadata.modified,
-        version: metadata.version
-      };
+      registry.posts[postIndex] = metadata;
       
       await fs.writeFile(
         path.join(POSTS_DIR, 'registry.json'),
@@ -108,11 +91,6 @@ export async function editPost(slug) {
     }
 
     console.log(chalk.green('\n✨ Post updated successfully!'));
-    console.log(chalk.yellow('\nNext steps:'));
-    console.log(chalk.white(`1. Preview your changes: npm run post preview ${slug}`));
-    if (metadata.status === 'draft') {
-      console.log(chalk.white(`2. Publish when ready: npm run post publish ${slug}`));
-    }
 
   } catch (error) {
     console.error(chalk.red('Error editing post:'), error);
