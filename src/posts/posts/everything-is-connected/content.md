@@ -106,7 +106,7 @@ Each small act of resistance creates change. Every repair, every shared meal, ev
 - Support worker-owned businesses and cooperatives when possible.
 
 ### Care for Your Wellbeing
-- Start where you are: Whether you have a kitchen or just a microwave, find ways to nourish yourself.
+- Start where you are: Whether you have a kitchen or just a microwave, find ways to nourish yourself. Avoid processed foods as much as possible.
 - Move naturally: Walking, stretching, dancing—whatever feels good and fits your life.
 - Rest without guilt: Taking breaks isn't lazy—it's necessary for health.
 - Be an informed patient: Research your options, ask questions, understand your care.
