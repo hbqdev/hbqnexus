@@ -1,4 +1,11 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="12" fill="#FF9900"/>
-  <text x="32" y="32" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="system-ui" font-size="24" font-weight="bold">NP</text>
+  <rect width="64" height="64" rx="12" fill="#D32F2F"/>
+  <path d="M20 16C18.8954 16 18 16.8954 18 18V46C18 47.1046 18.8954 48 20 48H44C45.1046 48 46 47.1046 46 46V24L38 16H20Z" fill="white"/>
+  <path d="M38 16L46 24H38V16Z" fill="#FFCDD2"/>
+  <path d="M24 34H26.5C27.8807 34 29 32.8807 29 31.5V30.5C29 29.1193 27.8807 28 26.5 28H24V34Z" fill="#D32F2F"/>
+  <path d="M31 34H33.5C34.8807 34 36 32.8807 36 31.5V30.5C36 29.1193 34.8807 28 33.5 28H31V34Z" fill="#D32F2F"/>
+  <path d="M38 28H40V34H38V28Z" fill="#D32F2F"/>
+  <path d="M24 28V34H26.5C27.8807 34 29 32.8807 29 31.5V30.5C29 29.1193 27.8807 28 26.5 28H24Z" stroke="#D32F2F" stroke-width="1.5"/>
+  <path d="M31 28V34H33.5C34.8807 34 36 32.8807 36 31.5V30.5C36 29.1193 34.8807 28 33.5 28H31Z" stroke="#D32F2F" stroke-width="1.5"/>
+  <path d="M38 28V34H40V28H38Z" stroke="#D32F2F" stroke-width="1.5"/>
 </svg>
