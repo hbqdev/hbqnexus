@@ -1,4 +1,7 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="12" fill="#E50914"/>
-  <text x="32" y="32" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="system-ui" font-size="24" font-weight="bold">T</text>
+  <rect width="64" height="64" rx="12" fill="#1E88E5"/>
+  <path d="M16 20C16 18.8954 16.8954 18 18 18H32V46H18C16.8954 46 16 45.1046 16 44V20Z" fill="white"/>
+  <path d="M48 20C48 18.8954 47.1046 18 46 18H32V46H46C47.1046 46 48 45.1046 48 44V20Z" fill="white"/>
+  <path d="M20 26H28M20 30H28M20 34H28" stroke="#1E88E5" stroke-width="2" stroke-linecap="round"/>
+  <path d="M36 26H44M36 30H44M36 34H44" stroke="#1E88E5" stroke-width="2" stroke-linecap="round"/>
 </svg>

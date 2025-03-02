@@ -1,4 +1,12 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="12" fill="#0070E0"/>
-  <text x="32" y="32" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="system-ui" font-size="24" font-weight="bold">ND</text>
+  <rect width="64" height="64" rx="12" fill="#00897B"/>
+  <rect x="14" y="14" width="12" height="12" rx="2" fill="white"/>
+  <rect x="38" y="14" width="12" height="12" rx="2" fill="white"/>
+  <rect x="14" y="38" width="12" height="12" rx="2" fill="white"/>
+  <rect x="38" y="38" width="12" height="12" rx="2" fill="white"/>
+  <path d="M26 20H38" stroke="white" stroke-width="2"/>
+  <path d="M20 26V38" stroke="white" stroke-width="2"/>
+  <path d="M44 26V38" stroke="white" stroke-width="2"/>
+  <path d="M26 44H38" stroke="white" stroke-width="2"/>
+  <path d="M26 20L38 44" stroke="white" stroke-width="2"/>
 </svg>

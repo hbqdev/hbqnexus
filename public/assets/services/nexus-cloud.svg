@@ -1,4 +1,5 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="12" fill="#0070E0"/>
-  <text x="32" y="32" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="system-ui" font-size="24" font-weight="bold">NC</text>
+  <rect width="64" height="64" rx="12" fill="#0288D1"/>
+  <path d="M44 38C47.3137 38 50 35.3137 50 32C50 28.6863 47.3137 26 44 26C43.9369 26 43.8741 26.0015 43.8116 26.0044C43.2731 22.5311 40.2721 20 36.6667 20C34.1039 20 31.8365 21.3649 30.6667 23.4667C29.9138 23.1617 29.0856 23 28.2222 23C24.7959 23 22 25.7959 22 29.2222C22 29.4259 22.0095 29.6267 22.028 29.8243C19.7649 30.5491 18.1111 32.6797 18.1111 35.1667C18.1111 38.2883 20.6561 40.8333 23.7778 40.8333H44Z" fill="white"/>
+  <path d="M32 30V44M32 44L28 40M32 44L36 40" stroke="#0288D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

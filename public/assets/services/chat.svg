@@ -1,4 +1,11 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="12" fill="#0070E0"/>
-  <text x="32" y="32" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="system-ui" font-size="24" font-weight="bold">C</text>
+  <rect width="64" height="64" rx="12" fill="#7B1FA2"/>
+  <path d="M18 24C18 21.7909 19.7909 20 22 20H34C36.2091 20 38 21.7909 38 24V30C38 32.2091 36.2091 34 34 34H22C19.7909 34 18 32.2091 18 30V24Z" fill="white"/>
+  <path d="M26 34L22 40L26 38" fill="white"/>
+  <path d="M30 30C30 27.7909 31.7909 26 34 26H46C48.2091 26 50 27.7909 50 30V36C50 38.2091 48.2091 40 46 40H34C31.7909 40 30 38.2091 30 36V30Z" fill="white"/>
+  <path d="M42 40L46 46L42 44" fill="white"/>
+  <circle cx="24" cy="27" r="2" fill="#7B1FA2"/>
+  <circle cx="30" cy="27" r="2" fill="#7B1FA2"/>
+  <circle cx="36" cy="33" r="2" fill="#7B1FA2"/>
+  <circle cx="42" cy="33" r="2" fill="#7B1FA2"/>
 </svg>

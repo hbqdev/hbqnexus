@@ -7,7 +7,7 @@
           "name": "Moods Mix",
           "url": "https://moods.hbqnexus.win/",
           "icon": "/assets/services/moods-mix.svg",
-          "description": "🌲 Ambient sounds for focus and calm."
+          "description": "🎵 Ambient sounds for focus and calm."
         },
         {
           "name": "SonicLib",
@@ -47,19 +47,19 @@
       ]
     },
     {
-      "name": "Tools",
+      "name": "Tools & Productivity",
       "services": [
         {
           "name": "Nexus Chat",
           "url": "https://chat.hbqnexus.win/",
           "icon": "/assets/services/chat.svg",
-          "description": "🤖 Access cutting-edge AI models like Claude 3.5, GPT-4, Gemini, and more. Simply sign up to start chatting! Or use demo@demo.com /password to login." 
+          "description": "💬 Access cutting-edge AI models like Claude 3.7, GPT-4o, Gemini 2.0, and more. Simply sign up to start chatting! Or use demo@demo.com /password to login." 
         },
         {
           "name": "Nexus Tools",
           "url": "https://tools.hbqnexus.win/",
           "icon": "/assets/services/it-tools.svg",
-          "description": "🛠️ A comprehensive suite of professional development and IT tools, all in one convenient place."
+          "description": "🔧 A comprehensive suite of professional development and IT tools, all in one convenient place."
         },
         {
           "name": "Nexus Cloud",
@@ -71,7 +71,7 @@
           "name": "Nexus Draw",
           "url": "https://draw.hbqnexus.win/",
           "icon": "/assets/services/nexus-draw.svg",
-          "description": "🎨 Online Flowchart and Diagram Tool"
+          "description": "✏️ Online Flowchart and Diagram Tool"
         },
         {
           "name": "Nexus Notes",
@@ -83,7 +83,7 @@
           "name": "Nexus PDF",
           "url": "https://pdf.hbqnexus.win/",
           "icon": "/assets/services/nexus-pdf.svg",
-          "description": "📄 A self-hosted one-stop shop for all your PDF needs."
+          "description": "📑 A self-hosted one-stop shop for all your PDF needs."
         },
         {
           "name": "Nexus Photos",
@@ -95,13 +95,13 @@
           "name": "Nexus Tasks",
           "url": "https://tasks.hbqnexus.win/",
           "icon": "/assets/services/nexus-tasks.svg",
-          "description": "📝 A task planner and to-do list with advanced features for productivity."
+          "description": "✅ A task planner and to-do list with advanced features for productivity."
         },
         {
           "name": "Nexus YouTube Downloader",
           "url": "https://youtubedl.hbqnexus.win/",
           "icon": "/assets/services/nexus-youtubedownloader.svg",
-          "description": "📥 Effortlessly download YouTube videos in any format you desire for offline viewing."
+          "description": "⬇️ Effortlessly download YouTube videos in any format you desire for offline viewing."
         },
         {
           "name": "Nexus Media Generator",
@@ -113,7 +113,7 @@
           "name": "Nexus Search",
           "url": "https://search.hbqnexus.win/",
           "icon": "/assets/services/search.svg",
-          "description": "🔍 Privacy-focused meta search engine that combines results from Google, Bing, DuckDuckGo, and more, without ads or tracking."
+          "description": "🔎 Privacy-focused meta search engine that combines results from Google, Bing, DuckDuckGo, and more, without ads or tracking."
         }
       ]
     }
