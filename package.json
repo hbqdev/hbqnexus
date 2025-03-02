@@ -11,7 +11,9 @@
     "add-service": "node scripts/addService.js",
     "post": "node scripts/post-manager/index.js",
     "gallery": "node scripts/gallery-manager.js",
-    "curator": "node scripts/content-curator.js"
+    "curator": "node scripts/content-curator.js",
+    "update-icons": "node scripts/update-service-urls.js",
+    "clear-cache": "./scripts/clear-cache.sh"
   },
   "dependencies": {
     "chalk": "^5.3.0",

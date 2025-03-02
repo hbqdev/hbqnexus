@@ -7,9 +7,16 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    // Add cache busting by including content hash in filenames
     rollupOptions: {
       input: {
         main: 'index.html',
+      },
+      output: {
+        // Add content hash to ensure cache busting
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
       }
     }
   },

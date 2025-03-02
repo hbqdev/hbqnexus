@@ -6,31 +6,31 @@
         {
           "name": "Moods Mix",
           "url": "https://moods.hbqnexus.win/",
-          "icon": "/assets/services/moods-mix.svg",
+          "icon": "/assets/services/moods-mix.svg?v=1740951565108",
           "description": "🎵 Ambient sounds for focus and calm."
         },
         {
           "name": "SonicLib",
           "url": "https://soniclib.hbqnexus.win/",
-          "icon": "/assets/services/soniclib.svg",
+          "icon": "/assets/services/soniclib.svg?v=1740951565108",
           "description": "🎧 Free Audible alternative with a growing library of audiobooks. Use demouser/password to login"
         },
         {
           "name": "TinFlix Requests",
           "url": "https://tinflix.win",
-          "icon": "/assets/services/tinflix-requests.svg",
+          "icon": "/assets/services/tinflix-requests.svg?v=1740951565108",
           "description": "🎬 Request movies and shows for the TinFlix/Plex Server. Simply login with your Plex credentials."
         },
         {
           "name": "TinFlix Stream",
           "url": "https://stream.tinflix.win",
-          "icon": "/assets/services/tinflix.svg",
+          "icon": "/assets/services/tinflix.svg?v=1740951565108",
           "description": "🍿 Stream from my massive collection of over 7000+ movies and 1300+ shows. Try the demo account on the login page."
         },
         {
           "name": "LibreLib",
           "url": "https://librelib.hbqnexus.win/",
-          "icon": "/assets/services/tinlit.svg",
+          "icon": "/assets/services/tinlit.svg?v=1740951565108",
           "description": "📚 A digital library of ebooks and comics. A great Kindle alternative. Use demouser/password to login"
         }
       ]
@@ -41,7 +41,7 @@
         {
           "name": "Nexus News",
           "url": "https://news.hbqnexus.win/",
-          "icon": "/assets/services/nexus-news.svg",
+          "icon": "/assets/services/nexus-news.svg?v=1740951565108",
           "description": "📰 Browse news from across the web in one clean, ad-free interface. Your privacy-focused news aggregator."
         }
       ]
@@ -52,67 +52,67 @@
         {
           "name": "Nexus Chat",
           "url": "https://chat.hbqnexus.win/",
-          "icon": "/assets/services/chat.svg",
-          "description": "💬 Access cutting-edge AI models like Claude 3.7, GPT-4o, Gemini 2.0, and more. Simply sign up to start chatting! Or use demo@demo.com /password to login." 
+          "icon": "/assets/services/chat.svg?v=1740951565108",
+          "description": "💬 Access cutting-edge AI models like Claude 3.7, GPT-4o, Gemini 2.0, and more. Simply sign up to start chatting! Or use demo@demo.com /password to login."
         },
         {
           "name": "Nexus Tools",
           "url": "https://tools.hbqnexus.win/",
-          "icon": "/assets/services/it-tools.svg",
+          "icon": "/assets/services/it-tools.svg?v=1740951565108",
           "description": "🔧 A comprehensive suite of professional development and IT tools, all in one convenient place."
         },
         {
           "name": "Nexus Cloud",
           "url": "https://cloud.hbqnexus.win/",
-          "icon": "/assets/services/nexus-cloud.svg",
+          "icon": "/assets/services/nexus-cloud.svg?v=1740951565108",
           "description": "☁️ Fully featured Google Drive alternative with unlimited storage."
         },
         {
           "name": "Nexus Draw",
           "url": "https://draw.hbqnexus.win/",
-          "icon": "/assets/services/nexus-draw.svg",
+          "icon": "/assets/services/nexus-draw.svg?v=1740951565108",
           "description": "✏️ Online Flowchart and Diagram Tool"
         },
         {
           "name": "Nexus Notes",
           "url": "https://notes.hbqnexus.win/",
-          "icon": "/assets/services/nexus-notes.svg",
+          "icon": "/assets/services/nexus-notes.svg?v=1740951565108",
           "description": "📝 A markdown-supported and sync alternative note-taking app similar to Google Docs and Evernote."
         },
         {
           "name": "Nexus PDF",
           "url": "https://pdf.hbqnexus.win/",
-          "icon": "/assets/services/nexus-pdf.svg",
+          "icon": "/assets/services/nexus-pdf.svg?v=1740951565108",
           "description": "📑 A self-hosted one-stop shop for all your PDF needs."
         },
         {
           "name": "Nexus Photos",
           "url": "https://photos.hbqnexus.win/",
-          "icon": "/assets/services/nexus-photos.svg",
+          "icon": "/assets/services/nexus-photos.svg?v=1740951565108",
           "description": "📸 A privacy-focused alternative to Google Photos and Apple iCloud, offering seamless photo storage and sharing. Message me for access. "
         },
         {
           "name": "Nexus Tasks",
           "url": "https://tasks.hbqnexus.win/",
-          "icon": "/assets/services/nexus-tasks.svg",
+          "icon": "/assets/services/nexus-tasks.svg?v=1740951565108",
           "description": "✅ A task planner and to-do list with advanced features for productivity."
         },
         {
           "name": "Nexus YouTube Downloader",
           "url": "https://youtubedl.hbqnexus.win/",
-          "icon": "/assets/services/nexus-youtubedownloader.svg",
+          "icon": "/assets/services/nexus-youtubedownloader.svg?v=1740951565108",
           "description": "⬇️ Effortlessly download YouTube videos in any format you desire for offline viewing."
         },
         {
           "name": "Nexus Media Generator",
           "url": "https://omnigen.hbqnexus.win/",
-          "icon": "/assets/services/omnigen-media-generator.svg",
+          "icon": "/assets/services/omnigen-media-generator.svg?v=1740951565108",
           "description": "🎨 Generate stunning media content using the latest AI models for images, voice, and video."
         },
         {
           "name": "Nexus Search",
           "url": "https://search.hbqnexus.win/",
-          "icon": "/assets/services/search.svg",
+          "icon": "/assets/services/search.svg?v=1740951565108",
           "description": "🔎 Privacy-focused meta search engine that combines results from Google, Bing, DuckDuckGo, and more, without ads or tracking."
         }
       ]
