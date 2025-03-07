@@ -1,18 +1,18 @@
 <template>
-  <div class="quote-container" :class="{ 'sci-fi': useLocalQuote }">
+  <div class="quote-container" :class="{ 'sci-fi': quoteSource === 'scifi' }">
     <div v-if="isLoading" class="loading-spinner">
       <div class="spinner"></div>
       <p>Loading inspiration...</p>
     </div>
     <div v-else-if="quote" class="quote-content">
       <div class="quote-text">
-        <span class="quote-mark left">"</span>{{ quote.q }}<span class="quote-mark right">"</span>
+        <span class="quote-mark left">❝</span>{{ quote.q }}<span class="quote-mark right">❞</span>
       </div>
       <div class="quote-author">— {{ quote.a }}</div>
     </div>
     <div v-else class="quote-content">
       <div class="quote-text">
-        <span class="quote-mark left">"</span>The best way to predict the future is to create it.<span class="quote-mark right">"</span>
+        <span class="quote-mark left">❝</span>The best way to predict the future is to create it.<span class="quote-mark right">❞</span>
       </div>
       <div class="quote-author">— Abraham Lincoln</div>
     </div>
@@ -32,7 +32,7 @@ const quote = ref({
   a: "Abraham Lincoln" 
 });
 const isLoading = ref(false);
-const useLocalQuote = ref(false); // Toggle between API and local quotes
+const quoteSource = ref('default'); // Track the source of quotes: 'api', 'ninja', 'scifi'
 
 // Fallback quotes in case the API fails
 const fallbackQuotes = [
@@ -58,41 +58,85 @@ const getRandomScifiQuote = () => {
   };
 };
 
-const fetchRandomQuote = async () => {
-  isLoading.value = true;
-  
-  // Toggle between API and local quotes
-  useLocalQuote.value = !useLocalQuote.value;
-  
-  if (useLocalQuote.value) {
-    // Use local sci-fi quotes
-    quote.value = getRandomScifiQuote();
-    isLoading.value = false;
-    return;
-  }
-  
+const fetchNinjaQuote = async () => {
   try {
-    // Try the API endpoint
+    const response = await fetch('https://api.api-ninjas.com/v1/quotes', {
+      method: 'GET',
+      headers: { 
+        'X-Api-Key': import.meta.env.VITE_NINJA_API_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Ninja API responded with status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    if (data && data.length > 0) {
+      // Map the Ninja API response to match our expected format
+      return {
+        q: data[0].quote,
+        a: data[0].author
+      };
+    } else {
+      throw new Error('No quote data received from Ninja API');
+    }
+  } catch (error) {
+    console.error('Error fetching quote from Ninja API:', error);
+    throw error;
+  }
+};
+
+const fetchQuotableQuote = async () => {
+  try {
     const response = await fetch('https://api.quotable.io/random');
     
     if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
+      throw new Error(`Quotable API responded with status: ${response.status}`);
     }
     
     const data = await response.json();
     if (data) {
-      // Map the API response to match our expected format
-      quote.value = {
+      return {
         q: data.content,
         a: data.author
       };
-      console.log("Quote fetched from API:", quote.value);
     } else {
-      throw new Error('No quote data received from API');
+      throw new Error('No quote data received from Quotable API');
+    }
+  } catch (error) {
+    console.error('Error fetching quote from Quotable API:', error);
+    throw error;
+  }
+};
+
+const fetchRandomQuote = async () => {
+  isLoading.value = true;
+  
+  // Rotate between the three sources: API, Ninja API, and local sci-fi quotes
+  if (quoteSource.value === 'default' || quoteSource.value === 'scifi') {
+    quoteSource.value = 'api';
+  } else if (quoteSource.value === 'api') {
+    quoteSource.value = 'ninja';
+  } else {
+    quoteSource.value = 'scifi';
+  }
+  
+  try {
+    if (quoteSource.value === 'scifi') {
+      // Use local sci-fi quotes
+      quote.value = getRandomScifiQuote();
+    } else if (quoteSource.value === 'ninja') {
+      // Use Ninja API
+      quote.value = await fetchNinjaQuote();
+    } else {
+      // Use Quotable API
+      quote.value = await fetchQuotableQuote();
     }
   } catch (error) {
     console.error('Error fetching quote:', error);
-    // Use a fallback quote if the API fails
+    // Use a fallback quote if all APIs fail
     quote.value = getRandomFallbackQuote();
   } finally {
     isLoading.value = false;
@@ -163,21 +207,34 @@ onBeforeUnmount(() => {
 
 .quote-mark {
   color: var(--accent-color);
-  font-weight: bold;
-  font-size: 1.4rem;
+  font-weight: normal;
+  font-size: 2rem;
   display: inline-block;
-  vertical-align: -2px;
+  vertical-align: middle;
   opacity: 0.8;
+  line-height: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .quote-mark.left {
-  margin-right: 4px;
-  transform: translateY(-5px);
+  margin-right: 6px;
+  transform: translateY(-0.2rem);
 }
 
 .quote-mark.right {
-  margin-left: 4px;
-  transform: translateY(5px);
+  margin-left: 6px;
+  transform: translateY(0.2rem);
+}
+
+/* Add a subtle effect on hover */
+.quote-container:hover .quote-mark.left {
+  opacity: 1;
+  transform: translateY(-0.3rem) scale(1.1);
+}
+
+.quote-container:hover .quote-mark.right {
+  opacity: 1;
+  transform: translateY(0.3rem) scale(1.1);
 }
 
 .quote-author {
