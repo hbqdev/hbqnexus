@@ -36,6 +36,9 @@
             <p>🎁 All services are completely free! All should have a demo account for you to try out.</p>
             <p>💬 Need access or a personal account? Message <strong>@nightfuryhbq</strong> on Discord</p>
           </div>
+          <div class="quote-section">
+            <RandomQuote />
+          </div>
           <component :is="Component" />
         </div>
       </transition>
@@ -50,10 +53,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useTheme } from './composables/useTheme';
 import AboutModal from './components/AboutModal.vue';
 import ContactModal from './components/ContactModal.vue';
+import RandomQuote from './components/RandomQuote.vue';
 
 const { currentTheme, setTheme } = useTheme();
 const showAbout = ref(false);
@@ -62,6 +66,10 @@ const showContactModal = ref(false);
 function toggleTheme() {
   setTheme(currentTheme.value === 'dark' ? 'light' : 'dark');
 }
+
+onMounted(() => {
+  console.log('App mounted, RandomQuote component should be visible');
+});
 </script>
 
 <style>
@@ -72,6 +80,7 @@ function toggleTheme() {
   --nav-bg: rgba(255, 255, 255, 0.8);
   --shadow-color: rgba(0, 0, 0, 0.1);
   --accent-color: #2563eb;
+  --accent-color-rgb: 37, 99, 235;
   --hover-color: #f8fafc;
   --border-color: #e2e8f0;
 }
@@ -83,6 +92,7 @@ function toggleTheme() {
   --nav-bg: rgba(15, 23, 42, 0.8);
   --shadow-color: rgba(0, 0, 0, 0.3);
   --accent-color: #60a5fa;
+  --accent-color-rgb: 96, 165, 250;
   --hover-color: #1e293b;
   --border-color: #334155;
 }
@@ -270,5 +280,11 @@ body {
 
 .contact-btn:hover {
   color: var(--accent-color);
+}
+
+.quote-section {
+  margin: 0 auto 2rem;
+  max-width: 1000px;
+  padding: 0 1rem;
 }
 </style> 
