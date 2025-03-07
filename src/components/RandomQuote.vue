@@ -6,13 +6,13 @@
     </div>
     <div v-else-if="quote" class="quote-content">
       <div class="quote-text">
-        <span class="quote-mark">"</span>{{ quote.q }}<span class="quote-mark">"</span>
+        <span class="quote-mark left">"</span>{{ quote.q }}<span class="quote-mark right">"</span>
       </div>
       <div class="quote-author">— {{ quote.a }}</div>
     </div>
     <div v-else class="quote-content">
       <div class="quote-text">
-        <span class="quote-mark">"</span>The best way to predict the future is to create it.<span class="quote-mark">"</span>
+        <span class="quote-mark left">"</span>The best way to predict the future is to create it.<span class="quote-mark right">"</span>
       </div>
       <div class="quote-author">— Abraham Lincoln</div>
     </div>
@@ -104,13 +104,23 @@ onBeforeUnmount(() => {
 .quote-container {
   max-width: 800px;
   margin: 0 auto 2rem;
-  padding: 1.5rem;
-  background-color: var(--card-bg);
+  padding: 1.5rem 2rem;
+  background: linear-gradient(to right, var(--card-bg), var(--card-bg) 97%);
+  background-image: 
+    radial-gradient(circle at 25px 25px, rgba(var(--accent-color-rgb), 0.05) 2px, transparent 0),
+    radial-gradient(circle at 75px 75px, rgba(var(--accent-color-rgb), 0.05) 2px, transparent 0);
+  background-size: 100px 100px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px var(--shadow-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   animation: fadeIn 1s ease-in-out;
   position: relative;
-  border-left: 3px solid var(--accent-color);
+  border-left: 4px solid var(--accent-color);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quote-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), 0 0 10px rgba(var(--accent-color-rgb), 0.1);
 }
 
 .quote-content {
@@ -121,22 +131,51 @@ onBeforeUnmount(() => {
 }
 
 .quote-text {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 0.75rem;
-  animation: fadeIn 1s ease-in-out;
+  animation: slideIn 0.8s ease-in-out;
+  font-weight: 500;
 }
 
 .quote-mark {
   color: var(--accent-color);
   font-weight: bold;
+  font-size: 1.4rem;
+  display: inline-block;
+  vertical-align: -2px;
+  opacity: 0.8;
+}
+
+.quote-mark.left {
+  margin-right: 4px;
+  transform: translateY(-5px);
+}
+
+.quote-mark.right {
+  margin-left: 4px;
+  transform: translateY(5px);
 }
 
 .quote-author {
   font-style: italic;
   color: var(--accent-color);
-  animation: fadeIn 1s ease-in-out;
-  font-size: 0.9rem;
+  animation: slideUp 1s ease-in-out;
+  font-size: 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.quote-author::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+  animation: lineExpand 1.2s forwards ease-in-out;
 }
 
 .loading-spinner {
@@ -161,19 +200,36 @@ onBeforeUnmount(() => {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-  font-size: 0.9rem;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  border-radius: 50%;
+  background-color: rgba(var(--accent-color-rgb), 0.1);
+  animation: pulse 2s infinite;
 }
 
 .refresh-button:hover {
   opacity: 1;
+  transform: rotate(180deg);
+  animation: none;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(var(--accent-color-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0);
+  }
 }
 
 @keyframes fadeIn {
@@ -182,6 +238,37 @@ onBeforeUnmount(() => {
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes lineExpand {
+  from {
+    width: 0;
+  }
+  to {
+    width: 40px;
   }
 }
 
