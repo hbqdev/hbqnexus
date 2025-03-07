@@ -1,5 +1,5 @@
 <template>
-  <div class="quote-container">
+  <div class="quote-container" :class="{ 'sci-fi': useLocalQuote }">
     <div v-if="isLoading" class="loading-spinner">
       <div class="spinner"></div>
       <p>Loading inspiration...</p>
@@ -24,6 +24,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import scifiQuotes from '../data/sci-fi-quotes.json';
 
 // Start with a default quote so something is always displayed
 const quote = ref({ 
@@ -31,6 +32,7 @@ const quote = ref({
   a: "Abraham Lincoln" 
 });
 const isLoading = ref(false);
+const useLocalQuote = ref(false); // Toggle between API and local quotes
 
 // Fallback quotes in case the API fails
 const fallbackQuotes = [
@@ -46,26 +48,47 @@ const getRandomFallbackQuote = () => {
   return fallbackQuotes[randomIndex];
 };
 
+const getRandomScifiQuote = () => {
+  const quotes = scifiQuotes.quotes;
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  const selectedQuote = quotes[randomIndex];
+  return {
+    q: selectedQuote.line,
+    a: `${selectedQuote.name} (${selectedQuote.source})`
+  };
+};
+
 const fetchRandomQuote = async () => {
   isLoading.value = true;
+  
+  // Toggle between API and local quotes
+  useLocalQuote.value = !useLocalQuote.value;
+  
+  if (useLocalQuote.value) {
+    // Use local sci-fi quotes
+    quote.value = getRandomScifiQuote();
+    isLoading.value = false;
+    return;
+  }
+  
   try {
-    // Try the backup API endpoint directly
-    const backupResponse = await fetch('https://api.quotable.io/random');
+    // Try the API endpoint
+    const response = await fetch('https://api.quotable.io/random');
     
-    if (!backupResponse.ok) {
-      throw new Error(`Backup API responded with status: ${backupResponse.status}`);
+    if (!response.ok) {
+      throw new Error(`API responded with status: ${response.status}`);
     }
     
-    const backupData = await backupResponse.json();
-    if (backupData) {
-      // Map the backup API response to match our expected format
+    const data = await response.json();
+    if (data) {
+      // Map the API response to match our expected format
       quote.value = {
-        q: backupData.content,
-        a: backupData.author
+        q: data.content,
+        a: data.author
       };
-      console.log("Quote fetched from backup API:", quote.value);
+      console.log("Quote fetched from API:", quote.value);
     } else {
-      throw new Error('No quote data received from backup API');
+      throw new Error('No quote data received from API');
     }
   } catch (error) {
     console.error('Error fetching quote:', error);
@@ -161,9 +184,11 @@ onBeforeUnmount(() => {
   font-style: italic;
   color: var(--accent-color);
   animation: slideUp 1s ease-in-out;
-  font-size: 1rem;
+  font-size: 0.95rem;
   position: relative;
   padding-bottom: 0.5rem;
+  max-width: 90%;
+  line-height: 1.4;
 }
 
 .quote-author::after {
@@ -279,5 +304,34 @@ onBeforeUnmount(() => {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.quote-type {
+  display: none;
+}
+
+.sci-fi {
+  border-left-color: var(--accent-color);
+}
+
+.sci-fi .quote-mark,
+.sci-fi .quote-author {
+  color: var(--accent-color);
+}
+
+.sci-fi .quote-author::after {
+  background-color: var(--accent-color);
+}
+
+.sci-fi .spinner {
+  border-left-color: var(--accent-color);
+}
+
+.sci-fi .refresh-button {
+  background-color: rgba(var(--accent-color-rgb), 0.1);
+}
+
+.sci-fi .refresh-button:hover {
+  box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0.4);
 }
 </style> 
