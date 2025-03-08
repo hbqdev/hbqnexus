@@ -34,6 +34,11 @@ const quote = ref({
 const isLoading = ref(false);
 const quoteSource = ref('default'); // Track the source of quotes: 'api', 'ninja', 'scifi'
 
+// Keep track of recently used quotes to avoid repetition
+const recentScifiQuotes = ref([]);
+const recentApiQuotes = ref([]);
+const recentNinjaQuotes = ref([]);
+
 // Fallback quotes in case the API fails
 const fallbackQuotes = [
   { q: "The best way to predict the future is to create it.", a: "Abraham Lincoln" },
@@ -50,8 +55,23 @@ const getRandomFallbackQuote = () => {
 
 const getRandomScifiQuote = () => {
   const quotes = scifiQuotes.quotes;
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const selectedQuote = quotes[randomIndex];
+  
+  // Filter out recently used quotes if we have enough quotes to choose from
+  let availableQuotes = quotes;
+  if (recentScifiQuotes.value.length < quotes.length - 10) {
+    availableQuotes = quotes.filter(q => !recentScifiQuotes.value.includes(q.id));
+  }
+  
+  // Get a random quote from available quotes
+  const randomIndex = Math.floor(Math.random() * availableQuotes.length);
+  const selectedQuote = availableQuotes[randomIndex];
+  
+  // Add to recent quotes and maintain a reasonable history size
+  recentScifiQuotes.value.push(selectedQuote.id);
+  if (recentScifiQuotes.value.length > 20) {
+    recentScifiQuotes.value.shift(); // Remove oldest quote from history
+  }
+  
   return {
     q: selectedQuote.line,
     a: `${selectedQuote.name} (${selectedQuote.source})`
@@ -75,10 +95,25 @@ const fetchNinjaQuote = async () => {
     const data = await response.json();
     if (data && data.length > 0) {
       // Map the Ninja API response to match our expected format
-      return {
+      const newQuote = {
         q: data[0].quote,
         a: data[0].author
       };
+      
+      // Check if this quote is a repeat of a recent one
+      const quoteKey = `${newQuote.q}-${newQuote.a}`;
+      if (recentNinjaQuotes.value.includes(quoteKey)) {
+        console.log("Received a repeat quote from Ninja API, trying again...");
+        return fetchNinjaQuote(); // Try again if it's a repeat
+      }
+      
+      // Add to recent quotes and maintain a reasonable history size
+      recentNinjaQuotes.value.push(quoteKey);
+      if (recentNinjaQuotes.value.length > 10) {
+        recentNinjaQuotes.value.shift(); // Remove oldest quote from history
+      }
+      
+      return newQuote;
     } else {
       throw new Error('No quote data received from Ninja API');
     }
@@ -98,10 +133,25 @@ const fetchQuotableQuote = async () => {
     
     const data = await response.json();
     if (data) {
-      return {
+      const newQuote = {
         q: data.content,
         a: data.author
       };
+      
+      // Check if this quote is a repeat of a recent one
+      const quoteKey = `${newQuote.q}-${newQuote.a}`;
+      if (recentApiQuotes.value.includes(quoteKey)) {
+        console.log("Received a repeat quote from Quotable API, trying again...");
+        return fetchQuotableQuote(); // Try again if it's a repeat
+      }
+      
+      // Add to recent quotes and maintain a reasonable history size
+      recentApiQuotes.value.push(quoteKey);
+      if (recentApiQuotes.value.length > 10) {
+        recentApiQuotes.value.shift(); // Remove oldest quote from history
+      }
+      
+      return newQuote;
     } else {
       throw new Error('No quote data received from Quotable API');
     }
