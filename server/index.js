@@ -25,9 +25,18 @@ const username = process.env.VITE_COUCHBASE_USERNAME;
 const password = process.env.VITE_COUCHBASE_PASSWORD;
 const bucketName = 'Quotes';
 
+// Global variables to maintain connection
 let cluster = null;
 let bucket = null;
 let collection = null;
+
+// Helper function to ensure we have a connection
+async function ensureConnection() {
+  if (!collection) {
+    return await connectToCouchbase();
+  }
+  return true;
+}
 
 async function connectToCouchbase() {
   try {
@@ -54,62 +63,66 @@ async function connectToCouchbase() {
   }
 }
 
-// API Routes
-app.get('/api/quotes/random', async (req, res) => {
+// Helper function to get a random quote from a specific collection
+async function getRandomQuoteFromCollection(collectionName) {
   try {
-    // Get a random quote using N1QL query
+    // First, get the count of quotes in the collection
+    const countQuery = `
+      SELECT count 
+      FROM \`${bucketName}\` 
+      WHERE type = '${collectionName}' 
+      LIMIT 1
+    `;
+    
+    const countResult = await cluster.query(countQuery);
+    
+    if (!countResult.rows.length || !countResult.rows[0].count) {
+      throw new Error(`No count found for ${collectionName}`);
+    }
+    
+    const quoteCount = countResult.rows[0].count;
+    const randomIndex = Math.floor(Math.random() * quoteCount);
+    
+    // Now use the random index to get a quote
     const query = `
       SELECT q.* 
-      FROM \`Quotes\` q 
-      WHERE q.type = "general" 
-      ORDER BY RAND() 
+      FROM \`${bucketName}\` AS doc, 
+           doc.quotes AS q 
+      WHERE doc.type = '${collectionName}' 
+      OFFSET ${randomIndex}
       LIMIT 1
     `;
     
     const result = await cluster.query(query);
     
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'No quotes found' });
+    if (result.rows.length > 0) {
+      return result.rows[0];
     }
     
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error fetching random quote:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-app.get('/api/quotes/scifi/random', async (req, res) => {
-  try {
-    // Get a random sci-fi quote using N1QL query
-    const query = `
-      SELECT q.* 
-      FROM \`Quotes\` q 
-      WHERE q.type = "scifi" 
-      ORDER BY RAND() 
-      LIMIT 1
-    `;
+    throw new Error('No quotes found with query');
+  } catch (queryError) {
+    console.warn(`Query method failed for ${collectionName}:`, queryError);
     
-    const result = await cluster.query(query);
+    // Fallback to getting the whole document
+    const result = await collection.get(collectionName);
+    const quotesDoc = result.content;
     
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'No sci-fi quotes found' });
+    if (!quotesDoc || !quotesDoc.quotes || quotesDoc.quotes.length === 0) {
+      throw new Error(`No quotes found in ${collectionName}`);
     }
     
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error fetching random sci-fi quote:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    const randomIndex = Math.floor(Math.random() * quotesDoc.quotes.length);
+    return quotesDoc.quotes[randomIndex];
   }
-});
+}
 
+// Main endpoint for random quotes from any collection
 app.get('/api/random-quote', async (req, res) => {
   try {
-    if (!collection) {
-      const connected = await connectToCouchbase();
-      if (!connected) {
-        return res.status(500).json({ error: 'Database connection failed' });
-      }
+    // Ensure we have a connection
+    const connected = await ensureConnection();
+    if (!connected) {
+      return res.status(500).json({ error: 'Database connection failed' });
     }
     
     console.log('Fetching random quote...');
@@ -121,85 +134,62 @@ app.get('/api/random-quote', async (req, res) => {
     console.log(`Selected collection: ${randomCollection}`);
     
     try {
-      // First, get the count of quotes in the selected collection
-      const countQuery = `
-        SELECT count 
-        FROM \`${bucketName}\` 
-        WHERE type = '${randomCollection}' 
-        LIMIT 1
-      `;
+      // Get a random quote from the selected collection
+      const quote = await getRandomQuoteFromCollection(randomCollection);
+      return res.json({ quote });
+    } catch (error) {
+      // If the selected collection fails, try the other one
+      console.warn(`Failed to get quote from ${randomCollection}, trying alternative`);
+      const otherCollection = randomCollection === 'quotes_collection' ? 
+        'scifi_quotes_collection' : 'quotes_collection';
       
-      const countResult = await cluster.query(countQuery);
-      
-      if (!countResult.rows.length || !countResult.rows[0].count) {
-        throw new Error(`No count found for ${randomCollection}`);
-      }
-      
-      const quoteCount = countResult.rows[0].count;
-      const randomIndex = Math.floor(Math.random() * quoteCount);
-      
-      // Now use the random index to get a quote
-      const query = `
-        SELECT q.* 
-        FROM \`${bucketName}\` AS doc, 
-             doc.quotes AS q 
-        WHERE doc.type = '${randomCollection}' 
-        OFFSET ${randomIndex}
-        LIMIT 1
-      `;
-      
-      const result = await cluster.query(query);
-      
-      if (result.rows.length > 0) {
-        return res.json({ quote: result.rows[0] });
-      }
-      
-      // Fallback to Method 2 if no results
-      throw new Error('No quotes found with query');
-      
-    } catch (queryError) {
-      console.warn('Query method failed, falling back to document method:', queryError);
-      
-      // Method 2: Get the whole document and select a random quote
       try {
-        const result = await collection.get(randomCollection);
-        const quotesDoc = result.content;
-        
-        if (!quotesDoc || !quotesDoc.quotes || quotesDoc.quotes.length === 0) {
-          return res.status(404).json({ error: 'No quotes found' });
-        }
-        
-        const randomIndex = Math.floor(Math.random() * quotesDoc.quotes.length);
-        const randomQuote = quotesDoc.quotes[randomIndex];
-        
-        return res.json({ quote: randomQuote });
-      } catch (docError) {
-        console.error('Error retrieving document:', docError);
-        
-        // If the selected collection doesn't exist, try the other one
-        const otherCollection = randomCollection === 'quotes_collection' ? 
-          'scifi_quotes_collection' : 'quotes_collection';
-        
-        try {
-          const result = await collection.get(otherCollection);
-          const quotesDoc = result.content;
-          
-          if (!quotesDoc || !quotesDoc.quotes || quotesDoc.quotes.length === 0) {
-            return res.status(404).json({ error: 'No quotes found' });
-          }
-          
-          const randomIndex = Math.floor(Math.random() * quotesDoc.quotes.length);
-          const randomQuote = quotesDoc.quotes[randomIndex];
-          
-          return res.json({ quote: randomQuote });
-        } catch (finalError) {
-          return res.status(500).json({ error: 'Failed to retrieve quote from any collection' });
-        }
+        const quote = await getRandomQuoteFromCollection(otherCollection);
+        return res.json({ quote });
+      } catch (finalError) {
+        return res.status(500).json({ error: 'Failed to retrieve quote from any collection' });
       }
     }
   } catch (error) {
     console.error('Error retrieving random quote:', error);
     return res.status(500).json({ error: 'Failed to retrieve quote', details: error.message });
+  }
+});
+
+// Optional: Keep these endpoints if you need to specifically target one collection
+app.get('/api/quotes/random', async (req, res) => {
+  try {
+    const connected = await ensureConnection();
+    if (!connected) {
+      return res.status(500).json({ error: 'Database connection failed' });
+    }
+    
+    try {
+      const quote = await getRandomQuoteFromCollection('quotes_collection');
+      return res.json({ quote });
+    } catch (error) {
+      return res.status(404).json({ error: 'No quotes found' });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to retrieve quote' });
+  }
+});
+
+app.get('/api/quotes/scifi/random', async (req, res) => {
+  try {
+    const connected = await ensureConnection();
+    if (!connected) {
+      return res.status(500).json({ error: 'Database connection failed' });
+    }
+    
+    try {
+      const quote = await getRandomQuoteFromCollection('scifi_quotes_collection');
+      return res.json({ quote });
+    } catch (error) {
+      return res.status(404).json({ error: 'No sci-fi quotes found' });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to retrieve quote' });
   }
 });
 
