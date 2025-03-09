@@ -1,5 +1,5 @@
 <template>
-  <div class="quote-container" :class="{ 'sci-fi': quoteSource === 'scifi' }">
+  <div class="quote-container" :class="{ 'couchbase': quoteSource === 'couchbase' }">
     <div v-if="isLoading" class="loading-spinner">
       <div class="spinner"></div>
       <p>Loading inspiration...</p>
@@ -24,7 +24,6 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import scifiQuotes from '../data/sci-fi-quotes.json';
 
 // Start with a default quote so something is always displayed
 const quote = ref({ 
@@ -32,12 +31,13 @@ const quote = ref({
   a: "Abraham Lincoln" 
 });
 const isLoading = ref(false);
-const quoteSource = ref('default'); // Track the source of quotes: 'api', 'ninja', 'scifi'
+const quoteSource = ref('default'); // Track the source of quotes: 'couchbase'
 
 // Keep track of recently used quotes to avoid repetition
-const recentScifiQuotes = ref([]);
-const recentApiQuotes = ref([]);
-const recentNinjaQuotes = ref([]);
+const recentCouchbaseQuotes = ref([]);
+
+// Add this new ref to track recently used fallback quotes
+const recentFallbackQuotes = ref([]);
 
 // Fallback quotes in case the API fails
 const fallbackQuotes = [
@@ -49,114 +49,77 @@ const fallbackQuotes = [
 ];
 
 const getRandomFallbackQuote = () => {
-  const randomIndex = Math.floor(Math.random() * fallbackQuotes.length);
-  return fallbackQuotes[randomIndex];
-};
-
-const getRandomScifiQuote = () => {
-  const quotes = scifiQuotes.quotes;
-  
-  // Filter out recently used quotes if we have enough quotes to choose from
-  let availableQuotes = quotes;
-  if (recentScifiQuotes.value.length < quotes.length - 10) {
-    availableQuotes = quotes.filter(q => !recentScifiQuotes.value.includes(q.id));
+  // Filter out recently used fallback quotes if possible
+  let availableQuotes = fallbackQuotes;
+  if (recentFallbackQuotes.value.length < fallbackQuotes.length - 1) {
+    availableQuotes = fallbackQuotes.filter(q => {
+      const quoteKey = `${q.q}-${q.a}`;
+      return !recentFallbackQuotes.value.includes(quoteKey);
+    });
   }
   
-  // Get a random quote from available quotes
   const randomIndex = Math.floor(Math.random() * availableQuotes.length);
   const selectedQuote = availableQuotes[randomIndex];
   
-  // Add to recent quotes and maintain a reasonable history size
-  recentScifiQuotes.value.push(selectedQuote.id);
-  if (recentScifiQuotes.value.length > 20) {
-    recentScifiQuotes.value.shift(); // Remove oldest quote from history
+  // Add to recent quotes and maintain history
+  const quoteKey = `${selectedQuote.q}-${selectedQuote.a}`;
+  recentFallbackQuotes.value.push(quoteKey);
+  if (recentFallbackQuotes.value.length > fallbackQuotes.length - 1) {
+    recentFallbackQuotes.value.shift(); // Remove oldest quote from history
   }
   
-  return {
-    q: selectedQuote.line,
-    a: `${selectedQuote.name} (${selectedQuote.source})`
-  };
+  return selectedQuote;
 };
 
-const fetchNinjaQuote = async () => {
+const fetchCouchbaseQuote = async (retryCount = 0) => {
   try {
-    const response = await fetch('https://api.api-ninjas.com/v1/quotes', {
-      method: 'GET',
-      headers: { 
-        'X-Api-Key': import.meta.env.VITE_NINJA_API_KEY,
-        'Content-Type': 'application/json'
-      }
-    });
+    // Maximum retry attempts to prevent infinite recursion
+    const MAX_RETRIES = 3;
+    
+    console.log('Fetching quote from Couchbase...');
+    
+    // Fetch a random quote from our database
+    const apiUrl = import.meta.env.DEV 
+      ? `http://localhost:3000/api/random-quote` 
+      : '/api/random-quote';
+    
+    console.log(`Calling API endpoint: ${apiUrl}`);
+    const response = await fetch(apiUrl);
     
     if (!response.ok) {
-      throw new Error(`Ninja API responded with status: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`API error (${response.status}):`, errorText);
+      throw new Error(`Couchbase API responded with status: ${response.status}`);
     }
     
     const data = await response.json();
-    if (data && data.length > 0) {
-      // Map the Ninja API response to match our expected format
+    console.log('Received data from API:', data);
+    
+    if (data && data.quote) {
       const newQuote = {
-        q: data[0].quote,
-        a: data[0].author
+        q: data.quote.q,
+        a: data.quote.a
       };
       
       // Check if this quote is a repeat of a recent one
       const quoteKey = `${newQuote.q}-${newQuote.a}`;
-      if (recentNinjaQuotes.value.includes(quoteKey)) {
-        console.log("Received a repeat quote from Ninja API, trying again...");
-        return fetchNinjaQuote(); // Try again if it's a repeat
+      if (recentCouchbaseQuotes.value.includes(quoteKey) && retryCount < MAX_RETRIES) {
+        console.log(`Received a repeat quote from Couchbase, trying again... (${retryCount + 1}/${MAX_RETRIES})`);
+        return fetchCouchbaseQuote(retryCount + 1); // Try again with incremented retry count
       }
       
       // Add to recent quotes and maintain a reasonable history size
-      recentNinjaQuotes.value.push(quoteKey);
-      if (recentNinjaQuotes.value.length > 10) {
-        recentNinjaQuotes.value.shift(); // Remove oldest quote from history
+      recentCouchbaseQuotes.value.push(quoteKey);
+      if (recentCouchbaseQuotes.value.length > 10) {
+        recentCouchbaseQuotes.value.shift(); // Remove oldest quote from history
       }
       
       return newQuote;
     } else {
-      throw new Error('No quote data received from Ninja API');
+      throw new Error('No quote data received from Couchbase API');
     }
   } catch (error) {
-    console.error('Error fetching quote from Ninja API:', error);
-    throw error;
-  }
-};
-
-const fetchQuotableQuote = async () => {
-  try {
-    const response = await fetch('https://api.quotable.io/random');
-    
-    if (!response.ok) {
-      throw new Error(`Quotable API responded with status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    if (data) {
-      const newQuote = {
-        q: data.content,
-        a: data.author
-      };
-      
-      // Check if this quote is a repeat of a recent one
-      const quoteKey = `${newQuote.q}-${newQuote.a}`;
-      if (recentApiQuotes.value.includes(quoteKey)) {
-        console.log("Received a repeat quote from Quotable API, trying again...");
-        return fetchQuotableQuote(); // Try again if it's a repeat
-      }
-      
-      // Add to recent quotes and maintain a reasonable history size
-      recentApiQuotes.value.push(quoteKey);
-      if (recentApiQuotes.value.length > 10) {
-        recentApiQuotes.value.shift(); // Remove oldest quote from history
-      }
-      
-      return newQuote;
-    } else {
-      throw new Error('No quote data received from Quotable API');
-    }
-  } catch (error) {
-    console.error('Error fetching quote from Quotable API:', error);
+    console.error('Error fetching quote from Couchbase:', error);
     throw error;
   }
 };
@@ -164,29 +127,13 @@ const fetchQuotableQuote = async () => {
 const fetchRandomQuote = async () => {
   isLoading.value = true;
   
-  // Rotate between the three sources: API, Ninja API, and local sci-fi quotes
-  if (quoteSource.value === 'default' || quoteSource.value === 'scifi') {
-    quoteSource.value = 'api';
-  } else if (quoteSource.value === 'api') {
-    quoteSource.value = 'ninja';
-  } else {
-    quoteSource.value = 'scifi';
-  }
-  
   try {
-    if (quoteSource.value === 'scifi') {
-      // Use local sci-fi quotes
-      quote.value = getRandomScifiQuote();
-    } else if (quoteSource.value === 'ninja') {
-      // Use Ninja API
-      quote.value = await fetchNinjaQuote();
-    } else {
-      // Use Quotable API
-      quote.value = await fetchQuotableQuote();
-    }
+    // Always use Couchbase quotes
+    quoteSource.value = 'couchbase';
+    quote.value = await fetchCouchbaseQuote();
   } catch (error) {
     console.error('Error fetching quote:', error);
-    // Use a fallback quote if all APIs fail
+    // Use a fallback quote if the API fails
     quote.value = getRandomFallbackQuote();
   } finally {
     isLoading.value = false;
@@ -417,28 +364,28 @@ onBeforeUnmount(() => {
   display: none;
 }
 
-.sci-fi {
+.couchbase {
   border-left-color: var(--accent-color);
 }
 
-.sci-fi .quote-mark,
-.sci-fi .quote-author {
+.couchbase .quote-mark,
+.couchbase .quote-author {
   color: var(--accent-color);
 }
 
-.sci-fi .quote-author::after {
+.couchbase .quote-author::after {
   background-color: var(--accent-color);
 }
 
-.sci-fi .spinner {
+.couchbase .spinner {
   border-left-color: var(--accent-color);
 }
 
-.sci-fi .refresh-button {
+.couchbase .refresh-button {
   background-color: rgba(var(--accent-color-rgb), 0.1);
 }
 
-.sci-fi .refresh-button:hover {
+.couchbase .refresh-button:hover {
   box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0.4);
 }
 </style> 

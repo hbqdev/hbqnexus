@@ -31,6 +31,10 @@ case $OS in
         echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
         sudo apt-get update
         sudo apt-get install -y nodejs
+        
+        # Install dependencies for Couchbase SDK
+        echo "Installing dependencies for Couchbase SDK..."
+        sudo apt-get install -y libcouchbase-dev build-essential python3
         ;;
         
     "Fedora" | "CentOS Linux" | "Red Hat Enterprise Linux")
@@ -39,11 +43,19 @@ case $OS in
         sudo dnf install -y curl
         curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
         sudo dnf install -y nodejs
+        
+        # Install dependencies for Couchbase SDK
+        echo "Installing dependencies for Couchbase SDK..."
+        sudo dnf install -y libcouchbase-devel gcc-c++ python3
         ;;
         
     "Arch Linux")
         echo "Installing Node.js on Arch Linux..."
         sudo pacman -Sy nodejs npm
+        
+        # Install dependencies for Couchbase SDK
+        echo "Installing dependencies for Couchbase SDK..."
+        sudo pacman -Sy libcouchbase base-devel python
         ;;
         
     "macOS")
@@ -53,11 +65,16 @@ case $OS in
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         fi
         brew install node
+        
+        # Install dependencies for Couchbase SDK
+        echo "Installing dependencies for Couchbase SDK..."
+        brew install libcouchbase
         ;;
         
     *)
         echo "Unsupported operating system: $OS"
         echo "Please install Node.js manually from https://nodejs.org/"
+        echo "And install libcouchbase for your platform"
         exit 1
         ;;
 esac
@@ -71,6 +88,38 @@ echo "npm version: $(npm --version)"
 echo -e "\nInstalling global packages..."
 sudo npm install -g vite @vitejs/plugin-vue
 
+# Install additional packages for Couchbase
+echo -e "\nInstalling packages for Couchbase integration..."
+sudo npm install -g express cors
+
 # Verify global installations
 echo -e "\nGlobal packages installed:"
-echo "Vite version: $(vite --version)" 
+echo "Vite version: $(vite --version)"
+
+# Create systemd service file for API server
+echo -e "\nCreating systemd service file for API server..."
+SERVICE_NAME="hbqnexus-api"
+APP_PATH=$(pwd)
+
+cat > /tmp/$SERVICE_NAME.service << EOF
+[Unit]
+Description=HBQ Nexus API Server
+After=network.target
+
+[Service]
+Type=simple
+User=$(whoami)
+WorkingDirectory=$APP_PATH
+ExecStart=/usr/bin/node $APP_PATH/server/index.js
+Restart=on-failure
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo -e "\nTo install the API server as a service, run:"
+echo "sudo mv /tmp/$SERVICE_NAME.service /etc/systemd/system/"
+echo "sudo systemctl daemon-reload"
+echo "sudo systemctl enable $SERVICE_NAME"
+echo "sudo systemctl start $SERVICE_NAME" 
