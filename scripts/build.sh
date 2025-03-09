@@ -16,6 +16,7 @@ vite build
 echo "Setting up directory structure..."
 mkdir -p dist/src/posts
 mkdir -p dist/public
+mkdir -p dist/server
 
 # Copy posts directory structure to dist/src/posts
 echo "Copying posts..."
@@ -25,6 +26,14 @@ cp -r src/posts/* dist/src/posts/
 echo "Copying data..."
 mkdir -p dist/src/data
 cp -r src/data/* dist/src/data/
+
+# Copy server files
+echo "Copying server files..."
+cp -r server/* dist/server/
+
+# Copy .env file for server
+echo "Copying environment configuration..."
+cp .env dist/
 
 # Copy public assets to dist root
 echo "Copying public assets..."
