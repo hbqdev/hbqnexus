@@ -112,25 +112,91 @@ app.get('/api/random-quote', async (req, res) => {
       }
     }
     
-    console.log('Fetching quotes_collection document...');
+    console.log('Fetching random quote...');
     
-    // Get the quotes collection document
-    const result = await collection.get('quotes_collection');
-    const quotesDoc = result.content;
+    // Randomly decide which collection to use
+    const collections = ['quotes_collection', 'scifi_quotes_collection'];
+    const randomCollection = collections[Math.floor(Math.random() * collections.length)];
     
-    if (!quotesDoc || !quotesDoc.quotes || quotesDoc.quotes.length === 0) {
-      return res.status(404).json({ error: 'No quotes found' });
+    console.log(`Selected collection: ${randomCollection}`);
+    
+    try {
+      // First, get the count of quotes in the selected collection
+      const countQuery = `
+        SELECT count 
+        FROM \`${bucketName}\` 
+        WHERE type = '${randomCollection}' 
+        LIMIT 1
+      `;
+      
+      const countResult = await cluster.query(countQuery);
+      
+      if (!countResult.rows.length || !countResult.rows[0].count) {
+        throw new Error(`No count found for ${randomCollection}`);
+      }
+      
+      const quoteCount = countResult.rows[0].count;
+      const randomIndex = Math.floor(Math.random() * quoteCount);
+      
+      // Now use the random index to get a quote
+      const query = `
+        SELECT q.* 
+        FROM \`${bucketName}\` AS doc, 
+             doc.quotes AS q 
+        WHERE doc.type = '${randomCollection}' 
+        OFFSET ${randomIndex}
+        LIMIT 1
+      `;
+      
+      const result = await cluster.query(query);
+      
+      if (result.rows.length > 0) {
+        return res.json({ quote: result.rows[0] });
+      }
+      
+      // Fallback to Method 2 if no results
+      throw new Error('No quotes found with query');
+      
+    } catch (queryError) {
+      console.warn('Query method failed, falling back to document method:', queryError);
+      
+      // Method 2: Get the whole document and select a random quote
+      try {
+        const result = await collection.get(randomCollection);
+        const quotesDoc = result.content;
+        
+        if (!quotesDoc || !quotesDoc.quotes || quotesDoc.quotes.length === 0) {
+          return res.status(404).json({ error: 'No quotes found' });
+        }
+        
+        const randomIndex = Math.floor(Math.random() * quotesDoc.quotes.length);
+        const randomQuote = quotesDoc.quotes[randomIndex];
+        
+        return res.json({ quote: randomQuote });
+      } catch (docError) {
+        console.error('Error retrieving document:', docError);
+        
+        // If the selected collection doesn't exist, try the other one
+        const otherCollection = randomCollection === 'quotes_collection' ? 
+          'scifi_quotes_collection' : 'quotes_collection';
+        
+        try {
+          const result = await collection.get(otherCollection);
+          const quotesDoc = result.content;
+          
+          if (!quotesDoc || !quotesDoc.quotes || quotesDoc.quotes.length === 0) {
+            return res.status(404).json({ error: 'No quotes found' });
+          }
+          
+          const randomIndex = Math.floor(Math.random() * quotesDoc.quotes.length);
+          const randomQuote = quotesDoc.quotes[randomIndex];
+          
+          return res.json({ quote: randomQuote });
+        } catch (finalError) {
+          return res.status(500).json({ error: 'Failed to retrieve quote from any collection' });
+        }
+      }
     }
-    
-    console.log(`Found ${quotesDoc.quotes.length} quotes`);
-    
-    // Get a random quote
-    const randomIndex = Math.floor(Math.random() * quotesDoc.quotes.length);
-    const randomQuote = quotesDoc.quotes[randomIndex];
-    
-    console.log(`Selected quote at index ${randomIndex}: "${randomQuote.q.substring(0, 30)}..."`);
-    
-    return res.json({ quote: randomQuote });
   } catch (error) {
     console.error('Error retrieving random quote:', error);
     return res.status(500).json({ error: 'Failed to retrieve quote', details: error.message });
