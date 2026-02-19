@@ -18,7 +18,7 @@
           <div class="bio-section">
             <p class="bio-text">
               I am a software/support engineer with a love for building and hosting services.
-              Currently I'm working for Replicate.com as an AI engineer. Come check out this page from time to time for updates
+              Currently I'm working for Couchbase.com as a Senior Database engineer. Come check out this page from time to time for updates
               and blog posts.
             </p>
             
