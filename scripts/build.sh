@@ -12,31 +12,24 @@ node scripts/update-service-urls.js
 echo "Building with Vite..."
 vite build
 
-# Create src/posts directory in dist
+# dist/ is the public web root. Only things safe to serve to the world
+# belong here: never .env, never server code, never anything from .git.
 echo "Setting up directory structure..."
 mkdir -p dist/src/posts
-mkdir -p dist/public
-mkdir -p dist/server
 
-# Copy posts directory structure to dist/src/posts
+# Posts are fetched at runtime from /src/posts/, so they must ship.
 echo "Copying posts..."
 cp -r src/posts/* dist/src/posts/
 
-# Copy data directory
+# BlogView fetches /src/data/shared-content.json at runtime; the rest of
+# src/data is bundled by Vite via ESM imports, but copying the dir is cheap.
 echo "Copying data..."
 mkdir -p dist/src/data
 cp -r src/data/* dist/src/data/
 
-# Copy server files
-echo "Copying server files..."
-cp -r server/* dist/server/
-
-# Copy .env file for server
-echo "Copying environment configuration..."
-cp .env dist/
-
-# Copy public assets to dist root
-echo "Copying public assets..."
-cp -r public/* dist/public/
+# Note: public/ is NOT copied here. Vite already emits publicDir contents to
+# the dist root, so copying it again just duplicated 15MB of images.
+# server/ and .env are NOT copied here either - the API server runs from the
+# repo root, and staging its files in the web root published them.
 
 echo "Build completed successfully!"
