@@ -23,8 +23,9 @@ app.use(helmet());
 // Access-Control-Allow-Origin: * - any site on the internet could read this
 // API from a visitor's browser. Restrict it to the origins that actually
 // serve the app.
+// Staging runs locally on :4174 with no public DNS; :5175 is `vite dev`.
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ||
-  'https://hub.hbqnexus.win,https://staging.hbqnexus.win,http://localhost:5175')
+  'https://hub.hbqnexus.win,http://localhost:4174,http://localhost:5175')
   .split(',').map((o) => o.trim()).filter(Boolean);
 
 app.use(cors({

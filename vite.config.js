@@ -24,11 +24,16 @@ const CSP = [
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "script-src 'self'",
+  // Cloudflare injects its Web Analytics beacon into the HTML at the edge, so
+  // it is not served from 'self' and a strict script-src blocks it. Allowing
+  // the origin is a deliberate trade: analytics in exchange for trusting one
+  // third-party script host.
+  "script-src 'self' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  // The beacon POSTs its measurements back to cloudflareinsights.com.
+  "connect-src 'self' https://cloudflareinsights.com https://static.cloudflareinsights.com",
   "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
   'upgrade-insecure-requests',
 ].join('; ')
@@ -41,9 +46,9 @@ const SECURITY_HEADERS = {
   'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
 }
 
+// Staging is deliberately local-only (localhost:4174) and has no public DNS.
 const ALLOWED_HOSTS = [
   'hub.hbqnexus.win',
-  'staging.hbqnexus.win',
   'localhost',
   '127.0.0.1',
 ]
