@@ -43,3 +43,26 @@ describe('createAnimationPicker', () => {
     expect(seen.size).toBeGreaterThan(3)
   })
 })
+
+describe('createAnimationPicker with explicit pool', () => {
+  it('returns the only value repeatedly when the pool has one element', () => {
+    const picker = createAnimationPicker(['only'])
+    expect(picker.next()).toBe('only')
+    expect(picker.next()).toBe('only')
+    expect(picker.next()).toBe('only')
+  })
+
+  it('honours an explicit multi-element pool and still avoids repeats', () => {
+    const picker = createAnimationPicker(['a', 'b'])
+    const draws = Array.from({ length: 20 }, () => picker.next())
+    draws.forEach((d) => expect(['a', 'b']).toContain(d))
+    for (let i = 1; i < draws.length; i++) expect(draws[i]).not.toBe(draws[i - 1])
+  })
+
+  it('returns undefined repeatedly with an empty pool', () => {
+    const picker = createAnimationPicker([])
+    expect(picker.next()).toBeUndefined()
+    expect(picker.next()).toBeUndefined()
+    expect(picker.next()).toBeUndefined()
+  })
+})
