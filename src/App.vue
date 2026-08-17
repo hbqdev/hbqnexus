@@ -73,30 +73,6 @@ onMounted(() => {
 </script>
 
 <style>
-:root {
-  --bg-color: #ffffff;
-  --text-color: #1a1a1a;
-  --card-bg: #f5f5f5;
-  --nav-bg: rgba(255, 255, 255, 0.8);
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --accent-color: #2563eb;
-  --accent-color-rgb: 37, 99, 235;
-  --hover-color: #f8fafc;
-  --border-color: #e2e8f0;
-}
-
-[data-theme="dark"] {
-  --bg-color: #0f172a;
-  --text-color: #f1f5f9;
-  --card-bg: #1e293b;
-  --nav-bg: rgba(15, 23, 42, 0.8);
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --accent-color: #60a5fa;
-  --accent-color-rgb: 96, 165, 250;
-  --hover-color: #1e293b;
-  --border-color: #334155;
-}
-
 * {
   margin: 0;
   padding: 0;

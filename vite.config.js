@@ -29,7 +29,7 @@ const CSP = [
   // it is not served from 'self' and a strict script-src blocks it. Allowing
   // the origin is a deliberate trade: analytics in exchange for trusting one
   // third-party script host.
-  "script-src 'self' https://static.cloudflareinsights.com",
+  "script-src 'self' https://static.cloudflareinsights.com 'sha256-nQNf3NSC9mN/o0ShjQyQMpQyPcyJ0J+BjleLHg2BRgs='",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
