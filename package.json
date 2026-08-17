@@ -8,6 +8,8 @@
     "dev": "vite --host",
     "build": "./scripts/build.sh",
     "preview": "vite preview --host",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "add-service": "node scripts/addService.js",
     "post": "node scripts/post-manager/index.js",
     "gallery": "node scripts/gallery-manager.js",
@@ -34,6 +36,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
-    "vite": "^5.0.12"
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^20.11.2",
+    "vite": "^5.0.12",
+    "vitest": "^4.1.10"
   }
 }
