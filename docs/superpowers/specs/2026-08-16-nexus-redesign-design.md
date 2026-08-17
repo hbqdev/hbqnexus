@@ -54,7 +54,16 @@ buried under a banner and a quote that render on every route.
 
 **The announcement banner and `RandomQuote` move out of `router-view`.** They
 currently sit inside it in `App.vue`, which is why they appear on every page.
-The banner becomes a dismissible strip on `/` only; the quote lives in the hero.
+The quote moves into the hero. The banner is **kept** (the owner likes it) but
+restyled and scoped to `/`:
+
+- Three stacked centre-aligned lines in a grey box (~145px) become **one inline
+  row** (~40px) with separators, on the dark surface. Same three messages, same
+  emoji, same Discord handle.
+- Dismissible via an `×`, persisted in `localStorage` under a **banner version
+  key** — changing the message brings it back for people who dismissed the old
+  one, which a plain boolean would not do.
+- Wraps to multiple lines on narrow screens; separators hide below 720px.
 
 ---
 
@@ -176,5 +185,5 @@ Fixed as part of this work because the redesign touches the same code:
 ## Open decisions
 
 1. **Featured flag** — confirm the `addService.js` prompt is acceptable.
-2. **Banner** — keep the announcement strip on `/`, or fold its content into the
-   hero and footer and drop it entirely?
+
+Resolved: the banner stays, restyled as a slim single row on `/` only.
