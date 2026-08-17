@@ -7,6 +7,9 @@
         </router-link>
         <div class="nav-links">
           <router-link to="/" class="nav-link" active-class="active">
+            Home
+          </router-link>
+          <router-link to="/services" class="nav-link" active-class="active">
             Services
           </router-link>
           <router-link to="/blog" class="nav-link" active-class="active">
@@ -30,17 +33,7 @@
 
     <router-view v-slot="{ Component }">
       <transition name="page" mode="out-in">
-        <div class="page-wrapper">
-          <div class="announcement-banner">
-            <p>🌐 Welcome to my self-hosted services and digital collections!</p>
-            <p>🎁 All services are completely free! All should have a demo account for you to try out.</p>
-            <p>💬 Need access or a personal account? Message <strong>@nightfuryhbq</strong> on Discord</p>
-          </div>
-          <div class="quote-section">
-            <RandomQuote />
-          </div>
-          <component :is="Component" />
-        </div>
+        <component :is="Component" />
       </transition>
     </router-view>
 
@@ -53,11 +46,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useTheme } from './composables/useTheme';
 import AboutModal from './components/AboutModal.vue';
 import ContactModal from './components/ContactModal.vue';
-import RandomQuote from './components/RandomQuote.vue';
 
 const { currentTheme, setTheme } = useTheme();
 const showAbout = ref(false);
@@ -66,10 +58,6 @@ const showContactModal = ref(false);
 function toggleTheme() {
   setTheme(currentTheme.value === 'dark' ? 'light' : 'dark');
 }
-
-onMounted(() => {
-  console.log('App mounted, RandomQuote component should be visible');
-});
 </script>
 
 <style>
@@ -221,23 +209,6 @@ body {
   position: relative;
 }
 
-.announcement-banner {
-  background: var(--card-bg);
-  padding: 1rem;
-  text-align: center;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 2rem;
-}
-
-.announcement-banner p {
-  margin: 0.5rem 0;
-  color: var(--text-color);
-}
-
-.announcement-banner strong {
-  color: var(--accent-color);
-}
-
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -256,11 +227,5 @@ body {
 
 .contact-btn:hover {
   color: var(--accent-color);
-}
-
-.quote-section {
-  margin: 0 auto 2rem;
-  max-width: 1000px;
-  padding: 0 1rem;
 }
 </style> 
