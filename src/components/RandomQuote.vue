@@ -76,16 +76,14 @@ const fetchCouchbaseQuote = async (retryCount = 0) => {
     // Maximum retry attempts to prevent infinite recursion
     const MAX_RETRIES = 3;
     
-    console.log('Fetching quote from Couchbase...');
-    
-    // Fetch a random quote from our database
-    const apiUrl = import.meta.env.DEV 
-      ? `http://localhost:3000/api/random-quote` 
-      : '/api/random-quote';
-    
-    console.log(`Calling API endpoint: ${apiUrl}`);
+    // Always relative: vite.config.js proxies /api to the API server in dev,
+    // and the reverse proxy does the same in production. Hardcoding
+    // localhost:3000 for dev meant the configured proxy was never used and
+    // the request was cross-origin, so it depended on the wide-open CORS.
+    const apiUrl = '/api/random-quote';
+
     const response = await fetch(apiUrl);
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`API error (${response.status}):`, errorText);
@@ -148,19 +146,18 @@ const handleVisibilityChange = () => {
 };
 
 onMounted(() => {
-  console.log("RandomQuote component mounted");
   fetchRandomQuote();
-  
-  // Add event listener for page visibility changes
+
+  // Refresh the quote when the tab is brought back into view.
   document.addEventListener('visibilitychange', handleVisibilityChange);
-  
-  // Add event listener for page refresh
-  window.addEventListener('beforeunload', fetchRandomQuote);
+
+  // Note: there used to be a 'beforeunload' listener firing fetchRandomQuote.
+  // It started a request while the page was being torn down - the response
+  // could never be used, so it was pure load on the API.
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener('visibilitychange', handleVisibilityChange);
-  window.removeEventListener('beforeunload', fetchRandomQuote);
 });
 </script>
 

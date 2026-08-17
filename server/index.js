@@ -1,23 +1,52 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { connect } from 'couchbase';
-import { fileURLToPath } from 'url';
-import path from 'path';
 
 // Initialize dotenv
 dotenv.config();
 
-// Get current file directory (ES modules don't have __dirname)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// This server sits behind a reverse proxy, so rate limiting and logging need
+// the real client IP rather than the proxy's.
+app.set('trust proxy', 1);
+
+// Security headers. This process only ever returns JSON, so the CSP that
+// matters for the site itself is applied at the static layer, not here.
+app.use(helmet());
+
+// Previously `cors()` with no arguments, which sends
+// Access-Control-Allow-Origin: * - any site on the internet could read this
+// API from a visitor's browser. Restrict it to the origins that actually
+// serve the app.
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ||
+  'https://hub.hbqnexus.win,https://staging.hbqnexus.win,http://localhost:5175')
+  .split(',').map((o) => o.trim()).filter(Boolean);
+
+app.use(cors({
+  origin(origin, callback) {
+    // No Origin header: same-origin navigation, curl, or a health check.
+    if (!origin) return callback(null, true);
+    return callback(null, ALLOWED_ORIGINS.includes(origin));
+  },
+  methods: ['GET'],
+}));
+
+app.use(express.json({ limit: '10kb' }));
+
+// The quote endpoints hit Couchbase on every call. Cap how fast a single
+// client can do that so one script can't saturate the database.
+app.use('/api', rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please slow down.' },
+}));
 
 // Couchbase connection details from .env
 const couchbaseUrl = process.env.VITE_COUCHBASE_URL;
@@ -66,43 +95,54 @@ async function connectToCouchbase() {
 // Helper function to get a random quote from a specific collection
 async function getRandomQuoteFromCollection(collectionName) {
   try {
-    // First, get the count of quotes in the collection
+    // `SELECT count FROM ...` selected a FIELD named "count" - which does not
+    // exist on these documents - rather than counting anything. It returned no
+    // usable value on every call, threw, and dropped into the catch path
+    // below, so the "efficient" query was never once used in production.
+    // ARRAY_LENGTH on the embedded array is what was meant.
     const countQuery = `
-      SELECT count 
-      FROM \`${bucketName}\` 
-      WHERE type = '${collectionName}' 
+      SELECT ARRAY_LENGTH(doc.quotes) AS quoteCount
+      FROM \`${bucketName}\` AS doc
+      WHERE doc.type = $type
       LIMIT 1
     `;
-    
-    const countResult = await cluster.query(countQuery);
-    
-    if (!countResult.rows.length || !countResult.rows[0].count) {
-      throw new Error(`No count found for ${collectionName}`);
+
+    // Parameterised rather than interpolated. collectionName is an internal
+    // constant today, so this was not exploitable - but a query built by
+    // string concatenation is one refactor away from being user-controlled.
+    const countResult = await cluster.query(countQuery, {
+      parameters: { type: collectionName },
+    });
+
+    const quoteCount = countResult.rows[0]?.quoteCount;
+    if (!quoteCount) {
+      throw new Error(`No quotes found for ${collectionName}`);
     }
-    
-    const quoteCount = countResult.rows[0].count;
+
+    // Computed locally from a validated integer, never from user input.
     const randomIndex = Math.floor(Math.random() * quoteCount);
-    
-    // Now use the random index to get a quote
+
     const query = `
-      SELECT q.* 
-      FROM \`${bucketName}\` AS doc, 
-           doc.quotes AS q 
-      WHERE doc.type = '${collectionName}' 
+      SELECT q.*
+      FROM \`${bucketName}\` AS doc
+      UNNEST doc.quotes AS q
+      WHERE doc.type = $type
       OFFSET ${randomIndex}
       LIMIT 1
     `;
-    
-    const result = await cluster.query(query);
-    
+
+    const result = await cluster.query(query, {
+      parameters: { type: collectionName },
+    });
+
     if (result.rows.length > 0) {
       return result.rows[0];
     }
-    
+
     throw new Error('No quotes found with query');
   } catch (queryError) {
-    console.warn(`Query method failed for ${collectionName}:`, queryError);
-    
+    console.warn(`Query method failed for ${collectionName}:`, queryError.message);
+
     // Fallback to getting the whole document
     const result = await collection.get(collectionName);
     const quotesDoc = result.content;
@@ -152,7 +192,10 @@ app.get('/api/random-quote', async (req, res) => {
     }
   } catch (error) {
     console.error('Error retrieving random quote:', error);
-    return res.status(500).json({ error: 'Failed to retrieve quote', details: error.message });
+    // Log the detail, return a generic message. Couchbase errors can carry
+    // hostnames, bucket names, and query text - none of which a browser
+    // client needs, and all of which help someone probing the service.
+    return res.status(500).json({ error: 'Failed to retrieve quote' });
   }
 });
 
