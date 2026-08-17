@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue';
 import BlogView from '../views/BlogView.vue';
 import BlogPostView from '../views/BlogPostView.vue';
 import GalleryView from '../views/GalleryView.vue';
+import ServicesView from '../views/ServicesView.vue';
+import NotFoundView from '../views/NotFoundView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,6 +29,16 @@ const router = createRouter({
       path: '/gallery',
       name: 'gallery',
       component: GalleryView,
+    },
+    {
+      path: '/services',
+      name: 'services',
+      component: ServicesView,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFoundView,
     },
   ],
 });
