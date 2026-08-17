@@ -16,8 +16,31 @@ function resolve(choice) {
   return choice
 }
 
+// `typeof localStorage !== 'undefined'` only guards against the binding not
+// existing at all. It does NOT guard against merely accessing the property
+// throwing - Safari with "Block All Cookies" (and some strict private-mode
+// configurations) throws a SecurityError just from touching
+// `window.localStorage`. These helpers catch that so a hostile privacy
+// setting can't abort module evaluation (readStoredTheme runs at import
+// time, before anything else could catch it) or crash setTheme.
+function readStoredTheme() {
+  try {
+    return localStorage.getItem(STORAGE_KEY)
+  } catch {
+    return null
+  }
+}
+
+function persistTheme(value) {
+  try {
+    localStorage.setItem(STORAGE_KEY, value)
+  } catch {
+    // Non-fatal: the theme still applies for this page view.
+  }
+}
+
 // Dark-first: an unset preference resolves to dark, matching the design.
-const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
+const stored = readStoredTheme()
 const theme = ref(stored || 'dark')
 const currentTheme = ref(resolve(theme.value))
 
@@ -30,7 +53,7 @@ function apply(name) {
 function setTheme(next) {
   theme.value = next
   currentTheme.value = resolve(next)
-  if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_KEY, next)
+  persistTheme(next)
   apply(currentTheme.value)
 }
 
