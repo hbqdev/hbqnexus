@@ -2,7 +2,7 @@
   <div class="services-view">
     <header class="sv-head">
       <h1>Services</h1>
-      <p>{{ total }} self-hosted services. All free, most with a demo account.</p>
+      <p>{{ total }} self-hosted services. All free to use.</p>
     </header>
 
     <section v-for="category in categories" :key="category.name" class="sv-cat">
