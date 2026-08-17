@@ -21,11 +21,34 @@ import { ref } from 'vue';
 // people most likely to care. Bump this when the copy changes.
 const KEY = 'banner-dismissed-v1';
 
-const visible = ref(localStorage.getItem(KEY) !== '1');
+// `typeof localStorage !== 'undefined'` only guards against the binding not
+// existing at all. It does NOT guard against merely accessing the property
+// throwing - Safari with "Block All Cookies" (and some strict private-mode
+// configurations) throws a SecurityError just from touching
+// `window.localStorage`. Matches the pattern in useTheme.js's
+// readStoredTheme/persistTheme. Unguarded, that throw happens at setup
+// scope; Vue swallows a setup throw in production, so the banner would
+// silently render nothing instead of just failing to remember dismissal.
+function readDismissed() {
+  try {
+    // A read failure means we can't know if this visitor dismissed the
+    // banner before, so default to showing it - the safe failure is a
+    // banner someone has to dismiss again, not one that vanishes.
+    return localStorage.getItem(KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+const visible = ref(!readDismissed());
 
 function dismiss() {
   visible.value = false;
-  localStorage.setItem(KEY, '1');
+  try {
+    localStorage.setItem(KEY, '1');
+  } catch {
+    // Non-fatal: the banner still hides for this page view.
+  }
 }
 </script>
 

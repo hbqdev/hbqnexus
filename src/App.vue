@@ -113,6 +113,7 @@ body {
 
 .nav-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
 }
@@ -203,10 +204,6 @@ body {
   cursor: pointer;
   font-size: inherit;
   font-weight: inherit;
-}
-
-.page-wrapper {
-  position: relative;
 }
 
 .app-container {

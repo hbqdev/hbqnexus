@@ -1,11 +1,22 @@
 import { describe, it, expect } from 'vitest'
 import {
-  ALL_ANIMATIONS, WORD_ANIMATIONS, createAnimationPicker, isWordAnimation,
+  ALL_ANIMATIONS, LINE_ANIMATIONS, WORD_ANIMATIONS, createAnimationPicker, isWordAnimation,
 } from '@/composables/useQuoteAnimation.js'
 
 describe('animation set', () => {
   it('exposes nine animations', () => {
     expect(ALL_ANIMATIONS).toHaveLength(9)
+  })
+
+  // createAnimationPicker() hands these exported arrays straight to every
+  // caller that doesn't pass its own pool (they're the default parameter
+  // value). Frozen means a future consumer that sorts or splices its "own"
+  // pool can't corrupt every other picker sharing the same reference.
+  it('freezes the exported animation arrays against mutation', () => {
+    expect(Object.isFrozen(LINE_ANIMATIONS)).toBe(true)
+    expect(Object.isFrozen(WORD_ANIMATIONS)).toBe(true)
+    expect(Object.isFrozen(ALL_ANIMATIONS)).toBe(true)
+    expect(() => ALL_ANIMATIONS.push('nope')).toThrow()
   })
 
   it('identifies per-word animations', () => {

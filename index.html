@@ -11,7 +11,7 @@
   <title>Nexus Hub</title>
   <meta name="description" content="A gateway to my self-hosted services and digital collections">
   <meta name="theme-color" content="#1a1b26">
-  <script>(function(){try{var t=localStorage.getItem('theme')||'dark';var r=t==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.setAttribute('data-theme',r);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='system'){t=null;}t=t||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 </head>
 <body>
   <div id="app"></div>

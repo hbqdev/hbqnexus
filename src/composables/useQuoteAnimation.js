@@ -2,9 +2,13 @@
 // paragraph; per-word variants need the text split into spans, so callers use
 // isWordAnimation() to decide which markup to render.
 
-export const LINE_ANIMATIONS = ['rise', 'blur', 'scale', 'slide', 'tilt', 'wipe']
-export const WORD_ANIMATIONS = ['words', 'cascade', 'focus']
-export const ALL_ANIMATIONS = [...LINE_ANIMATIONS, ...WORD_ANIMATIONS]
+// Frozen: createAnimationPicker() hands this shared array straight to every
+// caller that doesn't pass its own pool. A future consumer that sorts or
+// splices its "own" pool would otherwise corrupt every other picker sharing
+// the same array reference.
+export const LINE_ANIMATIONS = Object.freeze(['rise', 'blur', 'scale', 'slide', 'tilt', 'wipe'])
+export const WORD_ANIMATIONS = Object.freeze(['words', 'cascade', 'focus'])
+export const ALL_ANIMATIONS = Object.freeze([...LINE_ANIMATIONS, ...WORD_ANIMATIONS])
 
 export function isWordAnimation(name) {
   return WORD_ANIMATIONS.includes(name)

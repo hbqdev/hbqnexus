@@ -40,8 +40,18 @@ function persistTheme(value) {
 }
 
 // Dark-first: an unset preference resolves to dark, matching the design.
+//
+// A stored value of exactly 'system' is treated as unset. The pre-redesign
+// useTheme initialised theme to `localStorage.getItem('theme') || 'system'`
+// and persisted it on every mount, so every visitor who ever loaded the old
+// site now has the literal string 'system' sitting in their localStorage.
+// This redesign is dark-first; honoring that leftover 'system' value would
+// resolve to the OS preference and put every returning visitor on a
+// light-mode OS into light mode - the one surface this redesign was built
+// against. index.html's inline anti-flash script applies this identical
+// rule; if the two ever diverge, the dark-mode flash-of-wrong-theme returns.
 const stored = readStoredTheme()
-const theme = ref(stored || 'dark')
+const theme = ref(stored && stored !== 'system' ? stored : 'dark')
 const currentTheme = ref(resolve(theme.value))
 
 function apply(name) {
