@@ -11,12 +11,10 @@
     "add-service": "node scripts/addService.js",
     "post": "node scripts/post-manager/index.js",
     "gallery": "node scripts/gallery-manager.js",
-    "curator": "node scripts/content-curator.js",
     "update-icons": "node scripts/update-service-urls.js",
     "clear-cache": "./scripts/clear-cache.sh"
   },
   "dependencies": {
-    "@extractus/article-extractor": "^7.3.1",
     "chalk": "^5.3.0",
     "cors": "^2.8.5",
     "couchbase": "^4.4.5",
@@ -27,13 +25,9 @@
     "helmet": "^8.3.0",
     "highlight.js": "^11.11.1",
     "inquirer": "^9.2.10",
-    "jsdom": "^22.1.0",
     "marked": "^4.3.0",
-    "metascraper": "^5.45.0",
-    "metascraper-date": "^5.45.0",
     "open": "^9.1.0",
     "sharp": "^0.32.1",
-    "undici": "^5.28.3",
     "uuid": "^9.0.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
