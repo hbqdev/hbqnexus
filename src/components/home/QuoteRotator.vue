@@ -1,24 +1,20 @@
 <template>
-  <div class="qr" :class="animClass">
+  <div class="qr" :class="animClass" aria-live="polite" @mouseenter="pause" @mouseleave="resume" @focusin="pause" @focusout="resume">
     <p v-if="isWordAnim" class="qr-quote">
       <span v-for="(w, i) in words" :key="i" class="qr-w" :style="{ '--i': i }">{{ w }}</span>
     </p>
     <p v-else class="qr-quote">{{ display }}</p>
     <p class="qr-author">{{ author }}</p>
 
-    <div class="qr-row">
-      <button class="qr-btn" type="button" data-test="new-quote" @click="rotate">
-        <span aria-hidden="true">&#8635;</span> New quote
-      </button>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import {
   ALL_ANIMATIONS, createAnimationPicker, isWordAnimation,
 } from '../../composables/useQuoteAnimation';
+import { splitWords } from '../../utils/text';
 
 const FALLBACK = [
   { q: 'The future is already here - it is just not evenly distributed.', a: 'William Gibson' },
@@ -32,7 +28,7 @@ const seq = ref(0);
 const display = computed(() => '“' + quote.value.q + '”');
 const author = computed(() => quote.value.a);
 const isWordAnim = computed(() => isWordAnimation(anim.value));
-const words = computed(() => display.value.split(' '));
+const words = computed(() => splitWords(display.value));
 // seq forces Vue to re-render the node so the CSS animation restarts; re-adding
 // a class alone is not enough, the browser sees no change.
 const animClass = computed(() => 'anim-' + anim.value + ' seq-' + (seq.value % 2));
@@ -59,7 +55,42 @@ async function rotate() {
   seq.value += 1;
 }
 
-onMounted(rotate);
+const ROTATE_MS = 10000;
+let timer = null;
+let paused = false;
+
+// Auto-advancing content needs an escape hatch (WCAG 2.2.2), so rotation
+// pauses while the pointer or keyboard focus is inside the quote, and never
+// starts at all for readers who asked for reduced motion.
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined'
+  && typeof window.matchMedia === 'function'
+  && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function stop() {
+  if (timer) { clearInterval(timer); timer = null; }
+}
+
+function start() {
+  stop();
+  if (prefersReducedMotion()) return;
+  timer = setInterval(() => {
+    // Skip while hidden: the tab is not being read and each tick costs an
+    // API call against Couchbase.
+    if (!paused && !document.hidden) rotate();
+  }, ROTATE_MS);
+}
+
+function pause() { paused = true; }
+function resume() { paused = false; }
+
+onMounted(() => {
+  rotate();
+  start();
+});
+
+onBeforeUnmount(stop);
+
 defineExpose({ ALL_ANIMATIONS });
 </script>
 
@@ -75,7 +106,6 @@ defineExpose({ ALL_ANIMATIONS });
   text-wrap: balance;
 }
 .qr-w { display: inline-block; white-space: pre; }
-.qr-w + .qr-w::before { content: ' '; }
 .qr-author {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -84,21 +114,6 @@ defineExpose({ ALL_ANIMATIONS });
   color: #aebacb;
   margin: 0;
 }
-.qr-row { margin-top: 1rem; }
-.qr-btn {
-  font: inherit;
-  font-size: 0.74rem;
-  color: #cbd5e3;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  padding: 0.3rem 0.8rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-.qr-btn:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
 
 @keyframes aRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes aBlur { from { opacity: 0; filter: blur(12px); } to { opacity: 1; filter: blur(0); } }

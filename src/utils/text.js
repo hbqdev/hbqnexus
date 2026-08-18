@@ -40,3 +40,20 @@ export function truncateChars(s, max) {
   const limit = Math.max(0, max)
   return chars.length <= limit ? input : chars.slice(0, limit).join('')
 }
+
+/**
+ * Split text into words, each keeping its trailing space.
+ *
+ * Per-word entrance animations need one element per word, but the spaces must
+ * live in the TEXT, not in CSS. A `::before { content: ' ' }` spacer looks
+ * identical on screen and is absent from textContent, so the accessible name,
+ * any aria-live announcement, and copy-paste all collapse into one run-on word.
+ *
+ * @param {string} text
+ * @returns {string[]}
+ */
+export function splitWords(text) {
+  const parts = String(text ?? '').split(' ')
+  return parts.map((w, i) => (i < parts.length - 1 ? w + ' ' : w))
+}
+

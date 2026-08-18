@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { splitLeadingEmoji, truncateChars } from '@/utils/text.js'
+import { splitLeadingEmoji, truncateChars, splitWords } from '@/utils/text.js'
 
 describe('splitLeadingEmoji', () => {
   it('separates a leading emoji from the text', () => {
@@ -72,5 +72,25 @@ describe('splitLeadingEmoji grapheme clusters', () => {
     for (const d of ['\u{1F468}\u200D\u{1F4BB} a', '\u{1F44D}\u{1F3FD} b', '\u{1F469}\u200D\u{1F680} c']) {
       expect(splitLeadingEmoji(d).text).toMatch(/^[a-z]/)
     }
+  })
+})
+
+describe('splitWords', () => {
+  it('keeps the spaces inside the text, not in CSS', () => {
+    // The bug this guards: spans spaced with a ::before pseudo-element render
+    // correctly but produce "Howwouldyourlifebedifferent" in textContent, in
+    // the accessible name, and on copy-paste.
+    const words = splitWords('a b c')
+    expect(words).toEqual(['a ', 'b ', 'c'])
+    expect(words.join('')).toBe('a b c')
+  })
+
+  it('round-trips a real quote unchanged', () => {
+    const q = '“Life is wasted on the living.”'
+    expect(splitWords(q).join('')).toBe(q)
+  })
+
+  it('leaves a single word without a trailing space', () => {
+    expect(splitWords('solo')).toEqual(['solo'])
   })
 })
