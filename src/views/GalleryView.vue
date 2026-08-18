@@ -2,7 +2,7 @@
   <div class="gallery-container">
     <div class="gallery-header">
       <h1>Digital Art Gallery</h1>
-      <p class="gallery-lede">Digital paintings. Click any piece to view it full size.</p>
+      <p class="gallery-lede">Landscapes, painted digitally. Click any piece to view it full size.</p>
       <div class="grid-controls">
         <button 
           v-for="size in gridSizes" 

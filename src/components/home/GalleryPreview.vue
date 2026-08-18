@@ -3,7 +3,7 @@
     <div class="gp-head">
       <div>
         <h2>Gallery</h2>
-        <p>Digital paintings.</p>
+        <p>Landscapes, painted digitally.</p>
       </div>
       <router-link class="gp-more" to="/gallery">All paintings &#8594;</router-link>
     </div>

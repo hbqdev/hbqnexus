@@ -3,7 +3,7 @@
     <div class="lw-head">
       <div>
         <h2>Writing</h2>
-        <p>Latest essays.</p>
+        <p>Longer pieces on society, systems and staying connected.</p>
       </div>
       <router-link class="lw-more" to="/blog">All writing &#8594;</router-link>
     </div>

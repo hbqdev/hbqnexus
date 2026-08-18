@@ -2,7 +2,7 @@
   <div class="services-view">
     <header class="sv-head">
       <h1>Services</h1>
-      <p>{{ total }} self-hosted services. All free to use.</p>
+      <p>{{ total }} services across {{ categories.length }} categories &#8212; streaming, storage, notes, search and more. All free to use.</p>
     </header>
 
     <section v-for="category in categories" :key="category.name" class="sv-cat">
