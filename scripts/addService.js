@@ -150,6 +150,10 @@ async function addServices() {
       const description = await question('Service description (without emoji): ');
       const fullDescription = `${emoji} ${description}`;
       const useCustomIcon = (await question('Do you have a custom icon? (y/n): ')).toLowerCase() === 'y';
+      // Featured services appear on the home page. With nothing flagged the
+      // site falls back to the first two of each category, so answering "n"
+      // here is always safe.
+      const featured = (await question('Feature on the home page? (y/N): ')).toLowerCase() === 'y';
 
       // Generate or use custom icon
       const iconFileName = name.toLowerCase().replace(/\s+/g, '-') + '.svg';
@@ -175,12 +179,15 @@ async function addServices() {
         servicesData.categories.push(categoryObj);
       }
 
-      categoryObj.services.push({
+      const service = {
         name,
         url,
         icon: iconRelativePath,
         description: fullDescription
-      });
+      };
+      // Written only when true, so untouched entries keep their exact shape.
+      if (featured) service.featured = true;
+      categoryObj.services.push(service);
 
       // Sort categories and services alphabetically
       servicesData.categories.sort((a, b) => a.name.localeCompare(b.name));

@@ -40,3 +40,37 @@ describe('truncateChars', () => {
     expect(truncateChars('short', 20)).toBe('short')
   })
 })
+
+describe('truncateChars edge cases', () => {
+  it('returns an empty string for a negative max', () => {
+    // chars.slice(0, -1) would drop only the last character - not "truncate to
+    // a negative length" in any useful sense.
+    expect(truncateChars('hello', -1)).toBe('')
+  })
+
+  it('returns an empty string for max 0', () => {
+    expect(truncateChars('hello', 0)).toBe('')
+  })
+})
+
+describe('splitLeadingEmoji grapheme clusters', () => {
+  it('keeps a ZWJ sequence intact', () => {
+    // A code-point split would yield mark "\u{1F468}" and leave an orphan
+    // U+200D joiner leading the text.
+    const r = splitLeadingEmoji('\u{1F468}\u200D\u{1F4BB} Dev tools.')
+    expect(r.mark).toBe('\u{1F468}\u200D\u{1F4BB}')
+    expect(r.text).toBe('Dev tools.')
+  })
+
+  it('keeps a skin-tone modifier with its base', () => {
+    const r = splitLeadingEmoji('\u{1F44D}\u{1F3FD} Thumbs.')
+    expect(r.mark).toBe('\u{1F44D}\u{1F3FD}')
+    expect(r.text).toBe('Thumbs.')
+  })
+
+  it('never leaves a joiner or modifier leading the text', () => {
+    for (const d of ['\u{1F468}\u200D\u{1F4BB} a', '\u{1F44D}\u{1F3FD} b', '\u{1F469}\u200D\u{1F680} c']) {
+      expect(splitLeadingEmoji(d).text).toMatch(/^[a-z]/)
+    }
+  })
+})

@@ -94,7 +94,9 @@ function formatDate(date) {
 <style scoped>
 .blog-post {
   padding: 2rem;
-  max-width: 1200px;  /* Increased max-width */
+  /* 1200px ran ~110 characters per line - roughly 40 too many. Prose is
+     capped at 68ch; only wide media is allowed to break out (below). */
+  max-width: 68ch;
   margin: 0 auto;
 }
 
@@ -113,6 +115,7 @@ function formatDate(date) {
 }
 
 .post-body {
+  font-family: var(--font-serif);
   font-size: 1.1rem;
   line-height: 1.7;
 }
@@ -252,9 +255,9 @@ function formatDate(date) {
   margin-top: 3rem;
 }
 
-/* Add a max-width to the post content for better readability */
+/* Prose measure, matched to .post-content above. */
 .post-content {
-  max-width: 1200px;
+  max-width: 68ch;
   margin: 0 auto;
 }
 
@@ -270,4 +273,15 @@ function formatDate(date) {
   font-size: 1rem;
   font-style: italic;
 }
-</style> 
+
+/* Media may exceed the prose measure - text must not. */
+.post-body :is(img, figure, .video-container, pre, table) {
+  max-width: min(100%, 900px);
+  margin-inline: auto;
+}
+.error { padding: 4rem 0; max-width: 46ch; }
+.error h1 { font-size: 1.7rem; letter-spacing: -0.02em; margin: 0 0 0.6rem; color: var(--text-color); }
+.error p { margin: 0 0 1.5rem; color: var(--text-muted); }
+.error-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+.error-links a { color: var(--accent-color); }
+</style>

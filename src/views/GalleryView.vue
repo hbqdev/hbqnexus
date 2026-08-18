@@ -2,7 +2,7 @@
   <div class="gallery-container">
     <div class="gallery-header">
       <h1>Digital Art Gallery</h1>
-      <h2>Below are some of my digital art pieces.</h2>
+      <p class="gallery-lede">Digital paintings. Click any piece to view it full size.</p>
       <div class="grid-controls">
         <button 
           v-for="size in gridSizes" 
@@ -251,4 +251,10 @@ onMounted(async () => {
     grid-template-columns: 1fr !important;
   }
 }
-</style> 
+
+.gallery-lede {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0.35rem 0 1.5rem;
+}
+</style>

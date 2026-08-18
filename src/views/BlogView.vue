@@ -209,9 +209,11 @@ onMounted(() => {
 
 <style scoped>
 .blog {
-  max-width: 800px;
+  /* Was 800px with 2rem padding inside the already-centred .app-container,
+     which read as visibly off-centre against the nav. */
+  max-width: 760px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 0;
 }
 
 .blog-tabs {
