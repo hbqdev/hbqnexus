@@ -19,6 +19,11 @@ import { fileURLToPath, URL } from 'node:url'
 //
 // img-src allows https: because "Ideas Worth Sharing" entries reference
 // images hosted on the original article's domain.
+// Staging runs `vite preview` over plain HTTP on the LAN, where
+// upgrade-insecure-requests would break every subresource. Production is served
+// over TLS and keeps the directive.
+const INSECURE_PREVIEW = process.env.NEXUS_INSECURE_PREVIEW === '1'
+
 const CSP = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -36,7 +41,13 @@ const CSP = [
   // The beacon POSTs its measurements back to cloudflareinsights.com.
   "connect-src 'self' https://cloudflareinsights.com https://static.cloudflareinsights.com",
   "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
-  'upgrade-insecure-requests',
+  // Rewrites every http:// subresource to https://. Correct for production,
+  // which is served over TLS - but fatal for a plain-HTTP local preview: the
+  // browser upgrades /assets/*.js and *.css to https on a port with no TLS
+  // listener and the page renders blank. localhost is exempt (browsers treat it
+  // as a trustworthy origin), so the failure only appears over a LAN IP.
+  // Staging sets NEXUS_INSECURE_PREVIEW=1 to opt out.
+  ...(INSECURE_PREVIEW ? [] : ['upgrade-insecure-requests']),
 ].join('; ')
 
 const SECURITY_HEADERS = {
