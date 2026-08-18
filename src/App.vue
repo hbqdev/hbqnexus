@@ -46,14 +46,41 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useTheme } from './composables/useTheme';
+
 import AboutModal from './components/AboutModal.vue';
 import ContactModal from './components/ContactModal.vue';
 
 const { currentTheme, setTheme } = useTheme();
 const showAbout = ref(false);
 const showContactModal = ref(false);
+
+// Full-bleed sections break out of .app-container with negative margins, and
+// 50vw counts the scrollbar. Expose its real width so that maths is exact.
+function syncScrollbarWidth() {
+  const w = window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.style.setProperty('--scrollbar-width', w + 'px');
+}
+
+let bodyObserver = null;
+
+onMounted(() => {
+  syncScrollbarWidth();
+  window.addEventListener('resize', syncScrollbarWidth);
+  // The scrollbar does not exist at mount - it appears a frame later once the
+  // views fill the page, and that transition fires no resize event. Observing
+  // the body catches it, and every later content change too.
+  if (typeof ResizeObserver !== 'undefined') {
+    bodyObserver = new ResizeObserver(syncScrollbarWidth);
+    bodyObserver.observe(document.body);
+  }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', syncScrollbarWidth);
+  if (bodyObserver) bodyObserver.disconnect();
+});
 
 function toggleTheme() {
   setTheme(currentTheme.value === 'dark' ? 'light' : 'dark');
