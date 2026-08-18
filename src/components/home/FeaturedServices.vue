@@ -3,7 +3,7 @@
     <div class="fs-head">
       <div>
         <h2>Services</h2>
-        <p>Streaming, storage, notes and search &#8212; running on hardware I own.</p>
+        <p>Streaming, storage, notes, search and more &#8212; all self-hosted.</p>
       </div>
       <router-link class="fs-more" to="/services">All {{ total }} services &#8594;</router-link>
     </div>

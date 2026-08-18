@@ -1,7 +1,7 @@
 <template>
   <div v-if="visible" class="bar" data-test="bar">
     <div class="bar-in">
-      <span class="bar-item">🌐 <b>Welcome to my self-hosted services and digital collections!</b></span>
+      <span class="bar-item">🌐 <b>Welcome to Nexus Hub &#8212; self-hosted services and digital collections!</b></span>
       <span class="bar-sep" aria-hidden="true"></span>
       <span class="bar-item">🎁 All services are completely free! All should have a demo account for you to try out.</span>
       <span class="bar-sep" aria-hidden="true"></span>
