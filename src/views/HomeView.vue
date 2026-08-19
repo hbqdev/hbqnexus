@@ -7,10 +7,7 @@
       <LatestWriting />
       <GalleryPreview />
       <footer class="home-foot">
-        <span>
-          Self-hosted on dedicated hardware.
-          <strong>Message @nightfuryhbq on Discord for an account.</strong>
-        </span>
+        <span>Message <strong>@nightfuryhbq</strong> on Discord for an account.</span>
         <span>Nexus Hub</span>
       </footer>
     </div>
