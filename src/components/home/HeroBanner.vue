@@ -9,11 +9,6 @@
 
     <div class="hero-inner">
       <QuoteRotator />
-      <div class="hero-stats">
-        <div v-for="s in stats" :key="s.label">
-          <b>{{ s.value }}</b><span>{{ s.label }}</span>
-        </div>
-      </div>
     </div>
   </header>
 </template>
@@ -21,16 +16,8 @@
 <script setup>
 import QuoteRotator from './QuoteRotator.vue';
 import { useHeroArt } from '../../composables/useHeroArt';
-import { useServices } from '../../composables/useServices';
 
 const { hero } = useHeroArt();
-const { total } = useServices();
-
-const stats = [
-  { value: total.value, label: 'Services' },
-  { value: '7,000+', label: 'Films' },
-  { value: 5, label: 'Paintings' },
-];
 </script>
 
 <style scoped>
@@ -79,19 +66,6 @@ const stats = [
   border-radius: 999px; padding: 0.2rem 0.6rem;
 }
 .hero-credit b { color: #fff; font-weight: 600; }
-.hero-stats {
-  display: flex; flex-wrap: wrap; gap: 1.8rem;
-  padding-top: 1.3rem; margin-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.13);
-}
-.hero-stats b {
-  display: block; font-size: 1.15rem; font-weight: 650;
-  letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: #fff;
-}
-.hero-stats span {
-  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.11em;
-  text-transform: uppercase; color: #8d97a6;
-}
 @media (prefers-reduced-motion: reduce) {
   .hero-bg img { animation: none; transform: none; }
 }
