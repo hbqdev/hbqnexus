@@ -3,16 +3,19 @@
     <div class="gp-head">
       <div>
         <h2>Gallery</h2>
-        <p>Landscapes, painted digitally.</p>
+        <p>{{ lede }}</p>
       </div>
       <router-link class="gp-more" to="/gallery">All paintings &#8594;</router-link>
     </div>
 
     <div class="gp-grid">
-      <router-link v-for="item in preview" :key="item.id" class="gp-item" to="/gallery">
-        <img :src="item.thumbnail" :alt="item.title + ', digital painting'" loading="lazy" />
-        <span class="gp-label">{{ item.title }}</span>
-      </router-link>
+      <GalleryTile
+        v-for="item in preview"
+        :key="item.id"
+        :item="item"
+        as="div"
+        @click="$router.push('/gallery')"
+      />
     </div>
   </section>
 </template>
@@ -20,9 +23,18 @@
 <script setup>
 import { computed } from 'vue';
 import galleryData from '../../data/gallery.json';
+import GalleryTile from '../GalleryTile.vue';
 
 const MAX = 4;
 // Newest first, so a freshly added painting shows up without any code change.
+// Says what is actually there, so adding animations changes the copy.
+const lede = computed(() => {
+  const anims = galleryData.items.filter((i) => i.type === 'animation').length;
+  if (anims === 0) return 'Landscapes, painted digitally.';
+  if (anims === galleryData.items.length) return '3D animations.';
+  return 'Digital paintings and 3D animations.';
+});
+
 const preview = computed(() =>
   [...galleryData.items]
     .sort((a, b) => String(b.dateAdded).localeCompare(String(a.dateAdded)))

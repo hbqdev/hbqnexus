@@ -2,10 +2,23 @@
   <div class="gallery-container">
     <div class="gallery-header">
       <h1>Digital Art Gallery</h1>
-      <p class="gallery-lede">Landscapes, painted digitally. Click any piece to view it full size.</p>
+      <p class="gallery-lede">{{ lede }}</p>
+
+      <!-- Rendered only once both paintings and animations exist, so no
+           single-option filter appears while the gallery holds one kind. -->
+      <div v-if="filters.length" class="type-filters" role="group" aria-label="Filter by type">
+        <button
+          v-for="f in filters"
+          :key="f"
+          type="button"
+          :class="['grid-btn', { active: filter === f }]"
+          @click="filter = f"
+        >{{ filterLabel(f) }}</button>
+      </div>
+
       <div class="grid-controls">
-        <button 
-          v-for="size in gridSizes" 
+        <button
+          v-for="size in gridSizes"
           :key="size"
           :class="['grid-btn', { active: currentGridSize === size }]"
           @click="setGridSize(size)"
@@ -15,37 +28,50 @@
       </div>
     </div>
 
-    <div 
+    <div
       class="gallery-grid"
-      :style="{ 
-        'grid-template-columns': `repeat(${currentGridSize}, 1fr)`
-      }"
+      :style="{ 'grid-template-columns': `repeat(${currentGridSize}, 1fr)` }"
     >
-      <div
-        v-for="item in items"
+      <GalleryTile
+        v-for="item in visible"
         :key="item.id"
-        class="gallery-item"
+        :item="item"
         @click="openModal(item)"
-      >
-        <div class="item-inner">
-          <img 
-            :src="item.thumbnail" 
-            :alt="item.title"
-            loading="lazy"
-          >
-          <div class="item-overlay">
-            <h3>{{ item.title }}</h3>
-            <p v-if="item.description">{{ item.description }}</p>
-          </div>
-        </div>
-      </div>
+      />
     </div>
 
     <transition name="modal">
       <div v-if="selectedItem" class="modal" @click="closeModal">
         <div class="modal-content" @click.stop>
           <button class="modal-close" @click="closeModal">×</button>
-          <img :src="selectedItem.fullImage" :alt="selectedItem.title">
+
+          <!-- The iframe is created here and nowhere else: the grid shows a
+               locally stored poster, so no third-party request happens until
+               a visitor actually opens a YouTube piece. -->
+          <div v-if="selectedKind === 'youtube'" class="modal-embed">
+            <iframe
+              :src="selectedEmbed"
+              :title="selectedItem.title"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <video
+            v-else-if="selectedKind === 'video'"
+            class="modal-video"
+            :src="selectedItem.video"
+            :poster="selectedItem.thumbnail"
+            autoplay
+            muted
+            loop
+            playsinline
+            controls
+          ></video>
+
+          <img v-else :src="selectedItem.fullImage" :alt="selectedItem.title">
+
           <div class="modal-info">
             <h2>{{ selectedItem.title }}</h2>
             <p v-if="selectedItem.description">{{ selectedItem.description }}</p>
@@ -57,13 +83,33 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import galleryData from '../data/gallery.json';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import GalleryTile from '../components/GalleryTile.vue';
+import { useGallery, itemKind } from '../composables/useGallery';
+import { embedUrl } from '../utils/youtube';
 
-const items = ref([]);
+const { items, filter, filters, visible } = useGallery();
+
 const selectedItem = ref(null);
 const gridSizes = [2, 3, 4, 5];
 const currentGridSize = ref(3);
+
+const LABELS = { all: 'All', paintings: 'Paintings', animations: 'Animations' };
+function filterLabel(f) { return LABELS[f] || f; }
+
+// Describes what is actually in the gallery rather than assuming paintings only.
+const lede = computed(() => {
+  const kinds = items.value.map(itemKind);
+  const anims = kinds.filter((k) => k !== 'painting').length;
+  if (anims === 0) return 'Landscapes, painted digitally. Click any piece to view it full size.';
+  const paintings = kinds.length - anims;
+  if (paintings === 0) return '3D animations. Click any piece to play it.';
+  return 'Digital paintings and 3D animations. Click any piece to view it full size.';
+});
+
+const selectedKind = computed(() => (selectedItem.value ? itemKind(selectedItem.value) : null));
+const selectedEmbed = computed(() =>
+  selectedKind.value === 'youtube' ? embedUrl(selectedItem.value.youtubeId, { autoplay: true }) : null);
 
 function setGridSize(size) {
   currentGridSize.value = size;
@@ -79,12 +125,15 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-onMounted(async () => {
-  try {
-    items.value = galleryData.items;
-  } catch (error) {
-    console.error('Failed to load gallery:', error);
-  }
+function onKeydown(e) {
+  if (e.key === 'Escape' && selectedItem.value) closeModal();
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown));
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown);
+  // Never leave the page unscrollable if the view unmounts while open.
+  document.body.style.overflow = '';
 });
 </script>
 
@@ -257,4 +306,12 @@ onMounted(async () => {
   font-size: 1rem;
   margin: 0.35rem 0 1.5rem;
 }
+
+.type-filters {
+  display: flex; gap: 0.5rem; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 0.75rem;
+}
+.modal-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; }
+.modal-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+.modal-video { width: 100%; max-height: 80vh; display: block; background: #000; }
 </style>
